@@ -6,6 +6,10 @@
 <symbol-info>
 	<variable name="MFC_INSTANCE" flags="4096"/>
 	<variable name="MFC_CONTROLLER" flags="4096"/>
+	<variable name="CORIFLOW_INSTANCE" flags="4096"/>
+	<variable name="CORIFLOW_CONTROLLER" flags="4096"/>
+	<variable name="ELPRESS_INSTANCE" flags="4096"/>
+	<variable name="ELPRESS_CONTROLLER" flags="4096"/>
 	<variable name="TESTCASE" flags="4096"/>
 	<variable name="Read_SV_flow" flags="4096"/>
 	<variable name="Read_AV_flow" flags="4096"/>
@@ -19,6 +23,8 @@
 	<variable name="Read_AV_p_down" flags="4096"/>
 	<variable name="Read_unit_p_down" flags="4096"/>
 	<variable name="Read_alarm_info_p_down" flags="4096"/>
+	<variable name="Read_temperature" flags="4096"/>
+	<variable name="Read_density" flags="4096"/>
 	<variable name="Read_UserTag" flags="4096"/>
 	<variable name="Read_FluidName" flags="4096"/>
 	<variable name="Read_SN" flags="4096"/>
@@ -33,12 +39,19 @@
 	<variable name="Write_ControlFunction" flags="4096"/>
 	<variable name="Write_UserTag" flags="4096"/>
 	<variable name="Write_Reset_to_device" flags="4096"/>
+	<variable name="Write_Reset_Alarm_Enable" flags="4096"/>
 </symbol-info>
 <interface>
 <![CDATA[VAR_GLOBAL
 	MFC_INSTANCE : MFC_BHFF;
 
 	MFC_CONTROLLER: FB_Bronkhorst_FFDevice_RTU;
+	
+	CORIFLOW_INSTANCE : BH_DeviceSingle;
+	CORIFLOW_CONTROLLER: FB_Bronkhorst_SingleDevice;
+	
+	ELPRESS_INSTANCE : BH_DeviceSingle;
+	ELPRESS_CONTROLLER: FB_Bronkhorst_SingleDevice;
 
 	TESTCASE: TESTCASE;
 	
@@ -58,6 +71,9 @@
 	Read_unit_p_down : STRING;
 	Read_alarm_info_p_down : SINT;
 	
+	Read_temperature: REAL;
+	Read_density: REAL;
+	
 	Read_UserTag : STRING;
 	Read_FluidName: STRING;
 	Read_SN : STRING;
@@ -73,6 +89,8 @@
 	Write_ControlFunction : SINT;
 	Write_UserTag : STRING;
 	Write_Reset_to_device : SINT;
+	Write_Reset_Alarm_Enable : SINT;
+	
 END_VAR]]>
 </interface>
 </gvl>

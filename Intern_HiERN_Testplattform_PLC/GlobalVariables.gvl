@@ -2,6 +2,12 @@ VAR_GLOBAL
 	MFC_INSTANCE : MFC_BHFF;
 
 	MFC_CONTROLLER: FB_Bronkhorst_FFDevice_RTU;
+	
+	CORIFLOW_INSTANCE : BH_DeviceSingle;
+	CORIFLOW_CONTROLLER: FB_Bronkhorst_SingleDevice;
+	
+	ELPRESS_INSTANCE : BH_DeviceSingle;
+	ELPRESS_CONTROLLER: FB_Bronkhorst_SingleDevice;
 
 	TESTCASE: TESTCASE;
 	
@@ -21,6 +27,9 @@ VAR_GLOBAL
 	Read_unit_p_down : STRING;
 	Read_alarm_info_p_down : SINT;
 	
+	Read_temperature: REAL;
+	Read_density: REAL;
+	
 	Read_UserTag : STRING;
 	Read_FluidName: STRING;
 	Read_SN : STRING;
@@ -36,4 +45,6 @@ VAR_GLOBAL
 	Write_ControlFunction : SINT;
 	Write_UserTag : STRING;
 	Write_Reset_to_device : SINT;
+	Write_Reset_Alarm_Enable : SINT;
+	
 END_VAR

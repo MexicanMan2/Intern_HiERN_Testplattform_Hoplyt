@@ -1,10 +1,11 @@
-TEXT, Loading library 'D:\SolutionCenter Workspace\Intern_HiERN_Testplattform_PLC\libs\Standard.lib'
-TEXT, Loading library 'D:\SolutionCenter Workspace\Intern_HiERN_Testplattform_PLC\libs\Util_plc.lib'
+TEXT, Loading library 'C:\SolutionCenter_Workspace\Intern_HiERN_Testplattform_Hoplyt\Intern_HiERN_Testplattform_PLC\libs\Standard.lib'
+TEXT, Loading library 'C:\SolutionCenter_Workspace\Intern_HiERN_Testplattform_Hoplyt\Intern_HiERN_Testplattform_PLC\libs\Util_plc.lib'
 TEXT, Creating controller configuration
-INFO, wait for build trigger 65292
-INFO, 65292: send done: load_ready; 10 00-00-0A
-INFO, 65292: receive done: continue; 8 00-00-08
-TEXT, Importing 'FB_Bronkhorst_FFDevice_RTU'
+INFO, wait for build trigger 65375
+INFO, 65375: send done: load_ready; 10 00-00-0A
+INFO, 65375: receive done: wait; 4 00-00-04
+INFO, 65375: receive done: continue; 8 00-00-08
+TEXT, Importing 'FB_Bronkhorst_SingleDevice'
 TEXT, Declarations of the global constants
 TEXT, Declarations of the global library constants
 TEXT, Declarations of the global constants
@@ -12,50 +13,49 @@ TEXT, Declarations of the global library constants
 TEXT, Declarations of the global variables
 TEXT, Data allocation
 TEXT, Check task configuration
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_AlarmInfo_wo_text'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Build_StatusMessage'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Central_SVreq_Discard'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_cfg_function_feedback'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_cfg_mode_feedback'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Commit_Config'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Controlling'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Handle_SV'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Init'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Latch_ControlFunction'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Latch_ControlMode'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Latch_Reset'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Latch_SVreq'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Map_AlarmInfo'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Name'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Output_To_Device_And_User'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_pInput_bara_to_mbarg'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_ProcessAlarmInfo_Input'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_ReadAV'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Reset_BH_Device'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Reset_SV_Lifecycle'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Restore_UserSetpoints'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_SelectActiveChannel'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Settled'
-TEXT, Implementation of POU 'FB_Bronkhorst_FFDevice_RTU.ACT_Status_wo_text'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_AlarmInfo_wo_text'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Build_StatusMessage'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Central_SVreq_Discard'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_cfg_mode_feedback'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Commit_Config'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Controlling'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_device_type_feedback'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Handle_SV'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Init'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Latch_ControlMode'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Latch_Reset'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Latch_SVreq'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Map_AlarmInfo'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Name'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Output_To_Device_And_User'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_pInput_bara_to_mbarg'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_ProcessAlarmInfo_Input'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_ReadAV'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Reset_BH_Device'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Reset_SV_Lifecycle'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Restore_UserSetpoints'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_SelectActiveChannel'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Settled'
+TEXT, Implementation of POU 'FB_Bronkhorst_SingleDevice.ACT_Status_wo_text'
 TEXT, Implementation of task 'DefaultTas'
 TEXT, Check of the parameter configuration
 TEXT, Hardware-Configuration
 TEXT, Creating controller configuration
 TEXT, --------------------Check: Concurrent accesses--------------------
 TEXT, No concurrent accesses found
-TEXT, POU indices:231 (22%)
-TEXT, Size of used data: 6737 of 61440 bytes (10.97%)
+TEXT, POU indices:257 (25%)
+TEXT, Size of used data: 16554 of 61440 bytes (26.94%)
 TEXT, Size of used retain data: 0 of 1024 bytes (0.00%)
 TEXT, 0 Error(s), 0 Warning(s).
-TEXT, Code size: 25733 bytes
+TEXT, Code size: 43005 bytes
 TEXT, Creating controller configuration (recycling)
-TEXT, #15: Compile info: 70 SVI-variables (MSYS 4.30 supports 262144 variables / MSYS < 4.30 supports 65536 variables)
+TEXT, #15: Compile info: 147 SVI-variables (MSYS 4.30 supports 262144 variables / MSYS < 4.30 supports 65536 variables)
 TEXT, #15: Compile info: Retain variables need a compatible MSYS version
 TEXT, #15: Compile info: MSYS version 3.85.05 Beta is required at least to load m-file
-TEXT, #15: Compile info: 'C:\Users\lukas\AppData\Local\Temp\Intern_HiERN_Testplattform_PLC_8605506968588232155\Intern_H.m' was created
-TEXT, Current download: 1669 bytes
+TEXT, #15: Compile info: 'C:\Users\LUKASW~1\AppData\Local\Temp\Intern_HiERN_Testplattform_PLC_16099501281105068136\Intern_H.m' was created
+TEXT, Current download: 1117 bytes
 TEXT, Creating controller configuration
 TEXT, Creating controller configuration
 TEXT, Creating controller configuration
-INFO, 65292: send done: finished; 8 00-00-08
+INFO, 65375: send done: finished; 8 00-00-08

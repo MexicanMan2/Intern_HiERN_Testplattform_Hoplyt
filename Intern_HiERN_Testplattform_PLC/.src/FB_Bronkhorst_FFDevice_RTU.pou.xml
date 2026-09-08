@@ -23,6 +23,7 @@
 	<variable name="Output_ControlMode" flags="59392"/>
 	<variable name="Output_ControlFunction" flags="59392"/>
 	<variable name="Output_Reset_to_device" flags="59392"/>
+	<variable name="Output_Reset_Alarm_Enable" flags="59392"/>
 	<variable name="Output_UserTag" flags="59392"/>
 	<variable name="Output_ErrorState" flags="59392"/>
 	<variable name="Output_DeviceInstance" flags="59392"/>
@@ -57,6 +58,7 @@
 	<variable name="activeSecondary" flags="59392"/>
 	<variable name="secondaryChannelActive" flags="59392"/>
 	<variable name="sv_rejected" flags="59392"/>
+	<variable name="sv_rejected_latched" flags="59392"/>
 	<variable name="sv_changed" flags="59392"/>
 	<variable name="sv_outofrange" flags="59392"/>
 	<variable name="sv_pending" flags="59392"/>
@@ -120,6 +122,7 @@ VAR_OUTPUT
 	Output_ControlMode : SINT;
 	Output_ControlFunction : SINT;
 	Output_Reset_to_device : SINT;
+	Output_Reset_Alarm_Enable : SINT := 0;
 	Output_UserTag : STRING;
 	Output_ErrorState : state_device_error := DEV_ERR_NONE;
 	Output_DeviceInstance : MFC_BHFF;
@@ -179,6 +182,7 @@ VAR
 	secondaryChannelActive : BOOL;
 
 	sv_rejected		 : BOOL;
+	sv_rejected_latched : BOOL;
 	sv_changed		 : BOOL;
 	sv_outofrange	 : BOOL;
     sv_pending       : BOOL;
@@ -229,8 +233,6 @@ END_VAR]]>
 <st>
 <body>
 <![CDATA[
-
-
 
 
 (* Eingangsdaten *)
@@ -344,6 +346,9 @@ END_CASE
 (* GLOBAL STATE TRANSITIONS *)
 IF FLAG_Alarm THEN
 	state_next := DV_ERROR;
+	
+ELSIF NOT sn_valid THEN
+	state_next := DV_INIT;
 
 ELSIF NOT Input_DeviceInstance.enable THEN
 	state_next := DV_DISABLED;
@@ -353,8 +358,6 @@ END_IF
 (* Outputs *)
 ACT_Output_To_Device_And_User;
 ACT_Build_StatusMessage;
-
-
 
 ]]>
 </body>
@@ -366,8 +369,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 
         sv_pending := FALSE;
@@ -397,7 +398,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
 
 
 			(* === CONTROLLING: Überwachung === *)
@@ -435,8 +435,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 
 	    FLAG_Alarm := FALSE;
@@ -493,8 +491,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 		
 		secondaryChannelActive := FALSE;
@@ -553,7 +549,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 		CASE cfg_mode_act OF
 			0: cm_str := 'BUS/RS232';
 			1: cm_str := 'Analog input';
@@ -586,8 +581,6 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
-
-
 	
 	    CASE cfg_function_act OF
 	        0:  Output_DeviceInstance.alarm_info := Input_alarm_info_flow;
@@ -606,7 +599,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 		Input_p_up_SV_mbarg := Input_p_up.SV*1000-1000; (* mbar(g) *)
 		Input_p_up_AV_mbarg := Input_p_up.AV*1000-1000; (* mbar(a) *)
 	
@@ -622,7 +614,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
 
 
 		sv_rejected := FALSE;
@@ -644,8 +635,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 	
         Output_DeviceInstance.status := Input_status;
@@ -688,8 +677,6 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
-
-
 		
 		Input_alarm_info_flow := BH_AlarmBitTOAlarmArray(Input_flow.AlarmInfo);
 		Input_alarm_info_p_up := BH_AlarmBitTOAlarmArray(Input_p_up.AlarmInfo);
@@ -704,7 +691,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
 
 
 		Output_DeviceInstance.media := Input_FluidName;
@@ -730,8 +716,6 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
-
-
 		
 		(* ERROR Reset *)
 		
@@ -750,9 +734,8 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
-
-		IF Input_DeviceInstance.alarm_reset_enable = 4 THEN
+		Output_Reset_Alarm_Enable := Input_DeviceInstance.alarm_reset_enable;
+		IF Input_AlarmMode = 4 THEN
 			Output_Reset_to_device := 2; (*reset alarm*)
 			msg_str := ': Device reset triggered.';
 		    Output_DeviceInstance.status_msg := CONCAT(notification_lable, Input_DeviceInstance.name);
@@ -775,7 +758,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 		CASE cfg_function_act OF
 	        0: cf_str := ': Flow';
 	        1: cf_str := ': Upstream pressure';
@@ -794,7 +776,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
 
 
 	    (* ControlFunction *)
@@ -819,7 +800,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 	    (* ControlMode *)
 	    IF Input_DeviceInstance.control_mode_req <> Input_ControlMode THEN
 	        cfg_mode_req := Input_DeviceInstance.control_mode_req;
@@ -842,7 +822,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
 
 	
 	    (* SV Requests *)
@@ -897,7 +876,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 			(* Timeout *)
 	    	t_av_NOTmaintained(IN := NOT sv_maintained, PT := T#10s); (* Variabel über User !!*)
 	        
@@ -923,7 +901,6 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
 		 Output_DeviceInstance.SV_flow_req   := sv_req.Flow;
 		 Output_DeviceInstance.SV_p_up_req   := sv_req.PUp;
 		 Output_DeviceInstance.SV_p_down_req := sv_req.PDown;]]>
@@ -937,8 +914,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 
 	    Output_DeviceInstance.status_msg := '';
@@ -971,7 +946,7 @@ ACT_Build_StatusMessage;
     
     	END_CASE
 		
-		IF sv_rejected THEN
+		IF sv_rejected_latched THEN
 			Output_DeviceInstance.warning := TRUE;
 			IF warning_detail_str <> '' THEN
 				warning_detail_str :=CONCAT(warning_detail_str,', Setpoint rejected - ');
@@ -991,6 +966,8 @@ ACT_Build_StatusMessage;
 		
 	    IF Output_DeviceInstance.alarm THEN
 	        prefix := alarm_lable;
+	    ELSIF state = DV_ERROR THEN
+	    	prefix := error_lable;
 	    ELSIF Output_DeviceInstance.warning THEN
 	        prefix := warning_lable;
 	    ELSE
@@ -1088,14 +1065,12 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
-
-
 	    (* ================================================= *)
 	    (* Default: keine Sollwerte an das Gerät             *)
 	    (* ================================================= *)
 	    Output_SVreq_flow   := 0.0;
-	    Output_SVreq_p_up   := 0.0;
-	    Output_SVreq_p_down := 0.0;
+	    Output_SVreq_p_up   := 1.0; (* atmosphärischer Druck *)
+	    Output_SVreq_p_down := 1.0; (* atmosphärischer Druck *)
 	
 	    (* ================================================= *)
 	    (* Sollwert nur ausgeben, wenn er gültig angewandt    *)
@@ -1156,8 +1131,6 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
-
-
 	
 		IF Input_UserTag <> Input_DeviceInstance.name THEN
 			Output_UserTag := Input_DeviceInstance.name;;
@@ -1173,8 +1146,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 
 	    IF cfg_pending THEN
@@ -1209,11 +1180,10 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
-
-
 		
 		IF NOT setpoint_mode_allowed THEN
 		    sv_rejected := TRUE;
+		    sv_rejected_latched := TRUE;
 		    RETURN;
 		END_IF
 
@@ -1222,12 +1192,14 @@ ACT_Build_StatusMessage;
 	       (state <> DV_CONTROLLING) AND
 	       (state <> DV_SETTLED) THEN
 	        sv_rejected := TRUE;
+	        sv_rejected_latched := TRUE;
 	        RETURN;
 	    END_IF
 	
 	    (* Keine Arbeit bei Config-Wechsel *)
 	    IF cfg_pending THEN
 	    	sv_rejected := TRUE;
+	    	sv_rejected_latched := TRUE;
 	        RETURN;
 	    END_IF
 		
@@ -1258,12 +1230,14 @@ ACT_Build_StatusMessage;
 				    (* Optional: Statusmeldung *)
 				    sv_outofrange := TRUE;
 					sv_rejected := TRUE;
+					sv_rejected_latched := TRUE;
 					
 				    RETURN;
 				  END_IF
 			END_IF
 			
 			sv_outofrange := FALSE;
+			sv_rejected_latched := FALSE;
 	        sv_applied := TRUE;
 	        sv_pending := FALSE;
 		END_IF
@@ -1275,14 +1249,14 @@ ACT_Build_StatusMessage;
 		    
 		    IF NOT secondaryChannelActive THEN
 				
-				IF activePrimary.SVreq = activePrimary.DeviceSV THEN
+				IF ABS(activePrimary.SVreq - activePrimary.DeviceSV)<= activePrimary.SVreq * 0.01 THEN
 					sv_accepted := TRUE;
 				END_IF
 				
 			ELSE
 				
 				IF ABS(activePrimary.SVreq - activePrimary.DeviceSV)<= activePrimary.SVreq * 0.01 AND
-					activeSecondary.SVreq = activeSecondary.DeviceSV THEN
+					ABS(activeSecondary.SVreq - activeSecondary.DeviceSV)<= activeSecondary.SVreq * 0.01 THEN
 					sv_accepted := TRUE;
 				END_IF
 				
@@ -1299,8 +1273,6 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
-
-
 
 		
 		IF StateEntry THEN

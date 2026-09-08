@@ -1,40 +1,39 @@
-FUNCTION_BLOCK FB_Bronkhorst_FFDevice_RTU
+FUNCTION_BLOCK FB_Bronkhorst_SingleDevice
 VAR_INPUT
-	Input_DeviceInstance: MFC_BHFF;
+	Input_DeviceInstance: BH_DeviceSingle;
+	Input_DeviceType: BH_DeviceSingleType;
 	
-	Input_flow: FF_ProcessValue;
-	Input_p_up: FF_ProcessValue;
-	Input_p_down: FF_ProcessValue;
-	
-	Input_UserTag : STRING;
-	Input_FluidName : STRING;
+	Input: FF_ProcessValue;
+
+	Input_temperature: REAL;
+	Input_density: REAL;
+
+	Input_UserTag: STRING;
+	Input_FluidName: STRING;
 	Input_SN : STRING;
 	Input_status : SINT;
 	Input_AlarmMode : SINT;
-	Input_ControlMode : SINT := 23; (*23: CONTROLMODE_DEACTIVATED*)
-	Input_ControlFunction : SINT;
+	Input_ControlMode: SINT := 23; (* 23 = deactivated *)
 	Input_AV_Timeout : TIME := T#300s;
 	Input_SV_Accept_Timeout: TIME := T#10s;
-
+	
 END_VAR
 
 VAR_OUTPUT
 
-	Output_SVreq_flow : REAL;
-	Output_SVreq_p_up : REAL;
-	Output_SVreq_p_down : REAL;
-	Output_ControlMode : SINT;
-	Output_ControlFunction : SINT;
+	Output_SVreq : REAL;
+	
+	Output_ControlMode: SINT;
+	Output_ControlFunction: SINT;
 	Output_Reset_to_device : SINT;
 	Output_Reset_Alarm_Enable : SINT := 0;
 	Output_UserTag : STRING;
+	Output_DeviceInstance : BH_DeviceSingle;
 	Output_ErrorState : state_device_error := DEV_ERR_NONE;
-	Output_DeviceInstance : MFC_BHFF;
 	
 END_VAR
 
 VAR_IN_OUT
-
 END_VAR
 
 VAR
@@ -53,17 +52,11 @@ VAR
     
     req_reset		 : BOOL := FALSE;
 	
-	Input_alarm_info_flow : ARRAY [1..8] OF BOOL;
-	Input_alarm_info_p_up : ARRAY [1..8] OF BOOL;
-	Input_alarm_info_p_down : ARRAY [1..8] OF BOOL;
+	Input_alarm_info : ARRAY [1..8] OF BOOL;
 	
-	Input_p_up_SV_mbarg: REAL; (* mbar(g) *)
-	Input_p_up_AV_mbarg: REAL; (* mbar(a) *)
-	Input_p_up_unit_mbarg: STRING := 'mbar (g)'; (* mbar (g) *)
-	
-	Input_p_down_SV_mbarg: REAL; (* mbar(g) *)
-	Input_p_down_AV_mbarg: REAL; (* mbar(g) *)
-	Input_p_down_unit_mbarg: STRING := 'mbar (g)'; (* mbar(g) *)
+	Input_p_SV_mbarg: REAL; (* mbar(g) *)
+	Input_p_AV_mbarg: REAL; (* mbar(g) *)
+	Input_p_unit_mbarg: STRING := 'mbar (g)'; (* mbar(g) *)
 	
 	FLAG_Alarm: BOOL := FALSE;
 	FLAG_Warning: BOOL := FALSE;
@@ -79,11 +72,9 @@ VAR
     cfg_pending      : BOOL;   (* TRUE sobald Funktion ODER Mode geändert wurde *)
 
     (* ==== SV-Latches ==== *)
-    sv_req : FF_SV_LATCH;
+    sv_req           : REAL;
 	
-	activePrimary : BH_ActiveChannel;
-	activeSecondary : BH_ActiveChannel;
-	secondaryChannelActive : BOOL;
+	activePrimary    : BH_ActiveChannel;
 
 	sv_rejected		 : BOOL;
 	sv_rejected_latched : BOOL;
@@ -111,7 +102,7 @@ VAR
 	
 	(* ==== User Messages ==== *)
 	prefix	: STRING;
-	cf_str 	: STRING;
+	dv_str 	: STRING;
 	cm_str	: STRING;
 	sv_str	: STRING;
 	unit_str: STRING;
@@ -140,7 +131,6 @@ ACT_ProcessAlarmInfo_Input;
 ACT_pInput_bara_to_mbarg;
 
 (* User Requests *)
-ACT_Latch_ControlFunction;
 ACT_Latch_ControlMode;
 ACT_Latch_SVreq;
 
@@ -277,12 +267,12 @@ ACTIONS
 	    IF sn_valid THEN
 	        (* Verbindung erfolgreich *)
 	        t_init_timeout(IN := FALSE);
-	        Output_DeviceInstance.status_msg :=  CONCAT('Device connection established. SN=',Input_SN);
+	        Output_DeviceInstance.status_msg := CONCAT('Device connection established. SN=', Input_SN);
 			
 			(* Erstmaligen Status abrufen *)
 		    cfg_pending := TRUE;
 		    
-		    ACT_cfg_function_feedback;
+		    ACT_device_type_feedback;
 		    ACT_cfg_mode_feedback;
 		    
 		    Output_ErrorState := DEV_ERR_NONE;
@@ -298,14 +288,6 @@ ACTIONS
 	
 	END_ACTION
 		
-	ACTION ACT_pInput_bara_to_mbarg
-		Input_p_up_SV_mbarg := Input_p_up.SV*1000-1000; (* mbar(g) *)
-		Input_p_up_AV_mbarg := Input_p_up.AV*1000-1000; (* mbar(a) *)
-	
-		Input_p_down_SV_mbarg := Input_p_down.SV*1000-1000; (* mbar(g) *)
-		Input_p_down_AV_mbarg := Input_p_down.AV*1000-1000; (* mbar(g) *)
-	END_ACTION
-	
 	ACTION ACT_Latch_Reset
 		
 		(* ERROR Reset *)
@@ -313,19 +295,6 @@ ACTIONS
 		req_reset := Input_DeviceInstance.reset;
 		Input_DeviceInstance.reset := FALSE;
 		Output_DeviceInstance.reset := FALSE;
-	END_ACTION
-	
-	ACTION ACT_Latch_ControlFunction
-	    (* ControlFunction *)
-	    IF Input_DeviceInstance.control_function_req <> Input_ControlFunction THEN
-	        cfg_function_req := Input_DeviceInstance.control_function_req;
-	        cfg_pending := TRUE;
-	    END_IF
-	    cfg_function_act := Input_ControlFunction;
-	    
-	    IF cfg_pending THEN
-	    	ACT_Central_SVreq_Discard;
-	    END_IF
 	END_ACTION
 	
 	ACTION ACT_Latch_ControlMode
@@ -346,40 +315,19 @@ ACTIONS
 	ACTION ACT_Latch_SVreq	
 	    (* SV Requests *)
 	    IF NOT cfg_pending AND setpoint_mode_allowed THEN
-	    
-	    sv_changed := FALSE;
-	    
-	    	CASE cfg_function_act OF
-		    0:    
-		    	sv_changed := ABS(Input_DeviceInstance.SV_flow_req - Input_flow.SV) >= 0.001;
-
-				IF sv_changed THEN
-		            sv_req.Flow := Input_DeviceInstance.SV_flow_req;
-		        END_IF
-			1:
-		        sv_changed := ABS(Input_DeviceInstance.SV_p_up_req - Input_p_up_SV_mbarg) >= 0.001;
-
-				IF sv_changed THEN
-		            sv_req.PUp := Input_DeviceInstance.SV_p_up_req;
-		        END_IF
-			2:
-		        sv_changed := ABS(Input_DeviceInstance.SV_p_down_req - Input_p_down_SV_mbarg) >= 0.001;
-
-				IF sv_changed THEN
-		            sv_req.PDown := Input_DeviceInstance.SV_p_down_req;
-				END_IF
-			4:
-				sv_changed := ABS(Input_DeviceInstance.SV_p_down_req - Input_p_down_SV_mbarg) >= 0.001 OR
-					ABS(Input_DeviceInstance.SV_flow_req - Input_flow.SV) >= 0.001;
+	    	
+	    	CASE Input_DeviceType OF
+	    	
+	    	ELFLOW, CORIFLOW:
+	    		sv_changed := ABS(Input_DeviceInstance.SVreq - Input.SV) >= 0.001;
+	    	ELPRESS:
+				sv_changed := ABS(Input_DeviceInstance.SVreq - Input_p_SV_mbarg) >= 1.0;
 				
-				IF sv_changed THEN
-		            sv_req.PDown := Input_DeviceInstance.SV_p_down_req;
-		            sv_req.Flow := Input_DeviceInstance.SV_flow_req;
-		        END_IF
-		    END_CASE 
-		    
-		    IF sv_changed THEN		
-				ACT_Reset_SV_Lifecycle;	(* Lebenszyklus neu starten *)
+	    	END_CASE
+
+			IF sv_changed THEN
+	            sv_req := Input_DeviceInstance.SVreq;
+	            ACT_Reset_SV_Lifecycle;	(* Lebenszyklus neu starten *)
 	            sv_pending := TRUE;
 	        END_IF
 	        
@@ -404,12 +352,7 @@ ACTIONS
 			(* === CONTROLLING: Überwachung === *)
 
 	        (* Timeout *)
-	        CASE cfg_function_act OF
-	        0..2:
-	        	t_av_timeout(IN := NOT sv_reached, PT := Input_AV_Timeout);
-	        4:
-	        	t_av_timeout(IN := NOT sv_reached, PT := T#300s);
-	        END_CASE
+	        t_av_timeout(IN := NOT sv_reached, PT := Input_AV_Timeout);
 	
 	        IF t_av_timeout.Q THEN
 	        	RETURN;
@@ -450,31 +393,31 @@ ACTIONS
         sv_pending := FALSE;
 
         (* SV-Latches zurücksetzen *)
-		sv_req.Flow   := 0.0;
-	    sv_req.PUp   := 0.0;
-	    sv_req.PDown := 0.0;
+		sv_req := 0.0;
 
         (* Lebenszyklus vollständig zurücksetzen *)
         ACT_Reset_SV_Lifecycle;
 
         (* Rückmeldung an User *)
-        Output_DeviceInstance.SV_flow_req   := 0.0;
-        Output_DeviceInstance.SV_p_up_req   := 0.0;
-        Output_DeviceInstance.SV_p_down_req := 0.0;
+        Output_DeviceInstance.SVreq := 0.0;
 		
 		(* Device Reset zurücksetzten *)
 		Output_Reset_to_device := 0;
 	END_ACTION
 	
-	ACTION ACT_cfg_function_feedback
-		CASE cfg_function_act OF
-	        0: cf_str := ': Flow';
-	        1: cf_str := ': Upstream pressure';
-	        2: cf_str := ': Downstream pressure';
-	        4: cf_str := ': Downstream pressure with flow limit';
-	    ELSE
-            cf_str := ' - undefined';
-        END_CASE
+	ACTION ACT_device_type_feedback
+			CASE Input_DeviceType OF
+				ELFLOW:   dv_str := ': ELFLOW';
+				CORIFLOW: dv_str := ': CoriFlow';
+				ELPRESS:  dv_str := ': ELPRESS';
+			ELSE
+				dv_str := ' - undefined';
+			END_CASE
+	END_ACTION
+	
+	ACTION ACT_pInput_bara_to_mbarg
+		Input_p_SV_mbarg := Input.SV*1000-1000; (* mbar(g) *)
+		Input_p_AV_mbarg := Input.AV*1000-1000; (* mbar(a) *)
 	END_ACTION
 	
 	ACTION ACT_cfg_mode_feedback
@@ -502,49 +445,32 @@ ACTIONS
 	END_ACTION
 	
 	ACTION ACT_SelectActiveChannel
+		activePrimary.SVreq := sv_req;
+		activePrimary.AV := Input.AV;
+		activePrimary.DeviceSV := Input.SV;
+		activePrimary.Unit := Input.Unit;
+		activePrimary.SV_Min := Input_DeviceInstance.lower_limit;
+		activePrimary.SV_Max := Input_DeviceInstance.upper_limit;
 		
-		secondaryChannelActive := FALSE;
+		CASE Input_DeviceType OF
 		
-		CASE cfg_function_act OF
-		
-		0: (* Flow *)
-			activePrimary.SVreq := sv_req.Flow;
-			activePrimary.AV := Input_flow.AV;
-			activePrimary.DeviceSV := Input_flow.SV;
-			activePrimary.Unit := Input_flow.Unit;
+		ELFLOW,CORIFLOW: (* Flow *)
+			activePrimary.SVreq := sv_req;
+			activePrimary.AV := Input.AV;
+			activePrimary.DeviceSV := Input.SV;
+			activePrimary.Unit := Input.Unit;
 			activePrimary.SV_Min := Input_DeviceInstance.lower_limit;
 			activePrimary.SV_Max := Input_DeviceInstance.upper_limit;
-		1: (* Upstream Pressure *)
-			activePrimary.SVreq := sv_req.PUp;
-			activePrimary.AV := Input_p_up_AV_mbarg;
-			activePrimary.DeviceSV := Input_p_up_SV_mbarg;
-			activePrimary.Unit := Input_p_up_unit_mbarg;
+		ELPRESS: (* Pressure *)
+			activePrimary.SVreq := sv_req;
+			activePrimary.AV := Input_p_AV_mbarg;
+			activePrimary.DeviceSV := Input_p_SV_mbarg;
+			activePrimary.Unit := Input_p_unit_mbarg;
 			activePrimary.SV_Min := 0.0;
 			activePrimary.SV_Max := P_MAX_BAR;
-		2: (* Downstream Pressure *)
-			activePrimary.SVreq := sv_req.PDown;
-			activePrimary.AV := Input_p_down_AV_mbarg;
-			activePrimary.DeviceSV := Input_p_down_SV_mbarg;
-			activePrimary.Unit := Input_p_down_unit_mbarg;
-			activePrimary.SV_Min := 0.0;
-			activePrimary.SV_Max := P_MAX_BAR;			
-		4: (* Downstream Pressure w flow limit *)
-			activePrimary.SVreq := sv_req.PDown;
-			activePrimary.AV := Input_p_down_AV_mbarg;
-			activePrimary.DeviceSV := Input_p_down_SV_mbarg;
-			activePrimary.Unit := Input_p_down_unit_mbarg;
-			activePrimary.SV_Min := 0.0;
-			activePrimary.SV_Max := P_MAX_BAR;
-			
-			secondaryChannelActive := TRUE;
-			activeSecondary.SVreq := sv_req.Flow;
-			activeSecondary.AV := Input_flow.AV;
-			activeSecondary.DeviceSV := Input_flow.SV;
-			activeSecondary.Unit := Input_flow.Unit;
-			activeSecondary.SV_Min := Input_DeviceInstance.lower_limit;
-			activeSecondary.SV_Max := Input_DeviceInstance.upper_limit;
 
 		END_CASE
+	
 	
 		sv_active := (activePrimary.SVreq <> 0.0);
 	END_ACTION
@@ -553,21 +479,11 @@ ACTIONS
 
 	    IF cfg_pending THEN
 	
-	        (* === Commit ControlFunction === *)
-	        Output_ControlFunction := cfg_function_req;
-	            
-	        IF Input_ControlFunction = cfg_function_req THEN
-		       ACT_cfg_function_feedback;
-	        END_IF
-	
 			 (* === Commit ControlMode === *)
 	        Output_ControlMode := cfg_mode_req;
 	        
 			IF Input_ControlMode = cfg_mode_req THEN
 		        ACT_cfg_mode_feedback;
-	        END_IF
-			
-			IF  Input_ControlMode = cfg_mode_req AND Input_ControlFunction = cfg_function_req THEN
 		        cfg_pending := FALSE;
 	        END_IF
 		
@@ -583,7 +499,7 @@ ACTIONS
 		    RETURN;
 		END_IF
 
-	    (* Nur relevante States - nötig? *)
+	    (* Nur relevante States *)
 	    IF (state <> DV_SETTING_REQ) AND
 	       (state <> DV_CONTROLLING) AND
 	       (state <> DV_SETTLED) THEN
@@ -599,15 +515,7 @@ ACTIONS
 	        RETURN;
 	    END_IF
 		
-		sv_str := CONCAT(REAL_TO_STRING(activePrimary.SVreq),activePrimary.Unit);
-		
-	    IF secondaryChannelActive THEN
-			sv_str := CONCAT(sv_str,' (Flow limit ');
-			sv_str := CONCAT(sv_str,REAL_TO_STRING(activeSecondary.SVreq));
-			sv_str := CONCAT(sv_str,' ');
-			sv_str := CONCAT(sv_str,activeSecondary.Unit);
-			sv_str := CONCAT(sv_str,')');
-		END_IF
+		sv_str := CONCAT(REAL_TO_STRING(activePrimary.SVreq), activePrimary.Unit);
 	
 		IF NOT sv_applied THEN
 		
@@ -643,19 +551,8 @@ ACTIONS
 			(* Akzeptanz-Timer starten *)
 		    t_sv_accept(IN := TRUE, PT := Input_SV_Accept_Timeout);
 		    
-		    IF NOT secondaryChannelActive THEN
-				
-				IF ABS(activePrimary.SVreq - activePrimary.DeviceSV)<= activePrimary.SVreq * 0.01 THEN
-					sv_accepted := TRUE;
-				END_IF
-				
-			ELSE
-				
-				IF ABS(activePrimary.SVreq - activePrimary.DeviceSV)<= activePrimary.SVreq * 0.01 AND
-					ABS(activeSecondary.SVreq - activeSecondary.DeviceSV)<= activeSecondary.SVreq * 0.01 THEN
-					sv_accepted := TRUE;
-				END_IF
-				
+			IF ABS(activePrimary.SVreq - activePrimary.DeviceSV) <= activePrimary.SVreq * 0.01 THEN
+				sv_accepted := TRUE;
 			END_IF
 
 		END_IF
@@ -663,9 +560,7 @@ ACTIONS
 	END_ACTION
 	
 	ACTION ACT_Restore_UserSetpoints
-		 Output_DeviceInstance.SV_flow_req   := sv_req.Flow;
-		 Output_DeviceInstance.SV_p_up_req   := sv_req.PUp;
-		 Output_DeviceInstance.SV_p_down_req := sv_req.PDown;
+		 Output_DeviceInstance.SVreq := sv_req;
 	END_ACTION
 	
 	ACTION ACT_Output_To_Device_And_User
@@ -673,45 +568,39 @@ ACTIONS
 	    (* ================================================= *)
 	    (* Default: keine Sollwerte an das Gerät             *)
 	    (* ================================================= *)
-	    Output_SVreq_flow   := 0.0;
-	    Output_SVreq_p_up   := 1.0; (* atmosphärischer Druck *)
-	    Output_SVreq_p_down := 1.0; (* atmosphärischer Druck *)
+	    CASE Input_DeviceType OF
+		
+		ELFLOW,CORIFLOW: (* Flow *)
+			    Output_SVreq := 0.0;
+	    ELPRESS: (* Pressure *)
+	    		Output_SVreq := 1.0;
+		
+		END_CASE
 	
 	    (* ================================================= *)
 	    (* Sollwert nur ausgeben, wenn er gültig angewandt    *)
 	    (* ================================================= *)
 	    IF sv_applied AND
 	       (state = DV_SETTING_REQ OR state = DV_CONTROLLING OR state = DV_SETTLED) THEN
-			
-	        CASE cfg_function_act OF
+	       
+	       CASE Input_DeviceType OF
 	
-	            0:  (* Flow *)
-	            	IF sv_req.Flow > 0 THEN
-	                	Output_SVreq_flow := sv_req.Flow;
-	                END_IF
+	            ELFLOW,CORIFLOW:  (* Flow *)
+	            	Output_SVreq := sv_req;
 	
-	            1:  (* Upstream pressure *)
-	                Output_SVreq_p_up := sv_req.PUp/1000+1; (* Umrechnung von mbar (g) zu bar (a) *)
-	
-	            2:  (* Downstream pressure *)
-	                Output_SVreq_p_down := sv_req.PDown/1000+1; (* Umrechnung von mbar (g) zu bar (a) *)
-	
-	            4:  (* Downstream pressure with flow limit *)
-	                Output_SVreq_p_down := sv_req.PDown/1000+1; (* Umrechnung von mbar (g) zu bar (a) *)
-	                Output_SVreq_flow   := sv_req.Flow;
+	            ELPRESS: (* Pressure *)
+	                Output_SVreq := sv_req/1000+1; (* Umrechnung von mbar (g) zu bar (a) *)
 	
 	        END_CASE
+	        
 	    END_IF
-	
 	
 	    (* ================================================= *)
 	    (* Status an User                                    *)
 	    (* ================================================= *)
 		ACT_ReadAV;
 
-	    Output_DeviceInstance.control_function := cfg_function_act;
 	    Output_DeviceInstance.control_mode     := cfg_mode_act;
-		Output_DeviceInstance.control_function_req := cfg_function_req;
 	    Output_DeviceInstance.control_mode_req     := cfg_mode_req;
 		
 		Output_DeviceInstance.state := state;
@@ -719,47 +608,54 @@ ACTIONS
 		Output_DeviceInstance.SVaccepted := sv_accepted;
 		Output_DeviceInstance.SVrejected := sv_rejected;
 		Output_DeviceInstance.SVreached := sv_reached;
-	    Output_DeviceInstance.SV_flow_req := sv_req.Flow;
-	    Output_DeviceInstance.SV_flow := Input_flow.SV;
-		Output_DeviceInstance.SV_p_up_req := sv_req.PUp;
-		Output_DeviceInstance.SV_p_up := Input_p_up_SV_mbarg;
-		Output_DeviceInstance.SV_p_down_req := sv_req.PDown;
-		Output_DeviceInstance.SV_p_down := Input_p_down_SV_mbarg;
+		CASE Input_DeviceType OF
 		
+		ELFLOW,CORIFLOW: (* Flow *)
+			    Output_DeviceInstance.SVreq := sv_req;
+			    Output_DeviceInstance.SV := Input.SV;
+	    ELPRESS: (* Pressure *)
+	    		Output_DeviceInstance.SVreq := sv_req;
+				Output_DeviceInstance.SV := Input_p_SV_mbarg;
+		
+		END_CASE
 		
 	END_ACTION
 	
 	ACTION ACT_Map_AlarmInfo
-	
-	    CASE cfg_function_act OF
-	        0:  Output_DeviceInstance.alarm_info := Input_alarm_info_flow;
-	        1:  Output_DeviceInstance.alarm_info := Input_alarm_info_p_up;
-	        2,4: Output_DeviceInstance.alarm_info := Input_alarm_info_p_down;
-	    END_CASE
-	
+	    Output_DeviceInstance.alarm_info := Input_alarm_info;
 	END_ACTION
 	
 	ACTION ACT_ReadAV
 		Output_DeviceInstance.media := Input_FluidName;
-		IF Input_flow.AV > Input_DeviceInstance.upper_limit/500 THEN
-			Output_DeviceInstance.AV_flow := Input_flow.AV;
-		ELSE Output_DeviceInstance.AV_flow := 0;
-		END_IF;
-		Output_DeviceInstance.unit_flow := Input_flow.Unit;
-		Output_DeviceInstance.AV_p_up := Input_p_up_AV_mbarg;
-		Output_DeviceInstance.unit_p := Input_p_up.Unit;
-		Output_DeviceInstance.AV_p_down := Input_p_down_AV_mbarg;
-		Output_DeviceInstance.unit_p := Input_p_down.Unit;
+		
+(*		CASE Input_DeviceType OF *)
+(*		 *)
+(*		CORIFLOW, ELFLOW: *)
+(*				IF Input.AV > Input_DeviceInstance.upper_limit / 500.0 THEN *)
+(*					Output_DeviceInstance.AV := Input.AV; *)
+(*				ELSE *)
+(*					Output_DeviceInstance.AV := 0.0; *)
+(*				END_IF; *)
+(*		ELPRESS: *)
+(*				IF Input_p_AV_mbarg > Input_DeviceInstance.upper_limit / 500.0 THEN *)
+(*				    Output_DeviceInstance.AV := Input_p_AV_mbarg; *)
+(*				ELSE *)
+(*				    Output_DeviceInstance.AV := 0.0; *)
+(*				END_IF; *)
+(*		END_CASE *)
+		
+		Output_DeviceInstance.AV := activePrimary.AV;
+		
+		Output_DeviceInstance.unit := Input.Unit;
 		Output_DeviceInstance.serialnumber := Input_SN;
 		Output_DeviceInstance.name := Input_UserTag;
+		
+		Output_DeviceInstance.temperature := Input_temperature;
+		Output_DeviceInstance.density := Input_density;
 	END_ACTION
 
 	ACTION ACT_ProcessAlarmInfo_Input
-		
-		Input_alarm_info_flow := BH_AlarmBitTOAlarmArray(Input_flow.AlarmInfo);
-		Input_alarm_info_p_up := BH_AlarmBitTOAlarmArray(Input_p_up.AlarmInfo);
-		Input_alarm_info_p_down := BH_AlarmBitTOAlarmArray(Input_p_down.AlarmInfo);
-		
+		Input_alarm_info := BH_AlarmBitTOAlarmArray(Input.AlarmInfo);
 	END_ACTION
 	
 	ACTION ACT_AlarmInfo_wo_text
@@ -781,19 +677,19 @@ ACTIONS
 	
 	                3: (* Sensor < min *)
 	                    FLAG_Warning := TRUE;
-	                    warning_detail_str := CONCAT(warning_detail_str,'Sensor below minimum limit; ');
+	                    warning_detail_str := CONCAT(warning_detail_str, 'Sensor below minimum limit; ');
 	
 	                4: (* Sensor > max *)
 	                    FLAG_Warning := TRUE;
-	                    warning_detail_str := CONCAT(warning_detail_str,'Sensor above maximum limit; ');
+	                    warning_detail_str := CONCAT(warning_detail_str, 'Sensor above maximum limit; ');
 	
 	                5: (* Batch counter *)
 	                    FLAG_Warning := TRUE;
-	                    warning_detail_str := CONCAT(warning_detail_str,'Batch counter limit reached; ');
+	                    warning_detail_str := CONCAT(warning_detail_str, 'Batch counter limit reached; ');
 	
 	                6: (* Power-up / deviation *)
 	                    FLAG_Warning := TRUE;
-	                    warning_detail_str := CONCAT(warning_detail_str,'Power-up alarm; ');
+	                    warning_detail_str := CONCAT(warning_detail_str, 'Power-up alarm; ');
 	
 	                7: (* Communication *)
 	                    FLAG_Alarm := TRUE;
@@ -801,7 +697,7 @@ ACTIONS
 	                8: (* Hardware *)
 	                    FLAG_Alarm := TRUE;
 	                    Output_ErrorState := DEV_ERR_HARDWARE;
-
+	
 	            END_CASE
 	        END_IF
 	    END_FOR
@@ -847,9 +743,9 @@ ACTIONS
 	
 	ACTION ACT_Name
 	
-		IF Input_UserTag <> Input_DeviceInstance.name THEN
-			Output_UserTag := Input_DeviceInstance.name;;
-			Output_DeviceInstance.name := Input_DeviceInstance.name;
+		IF Input_UserTag <> Output_DeviceInstance.name THEN
+			Output_UserTag := Output_DeviceInstance.name;
+			Output_DeviceInstance.name := Output_DeviceInstance.name;
 		END_IF
 	
 	END_ACTION
@@ -872,11 +768,11 @@ ACTIONS
     		
     		DEV_ERR_INIT: err_msg := 'Initialization timeout';
     		
-    		DEV_ERR_SV_ACCEPT_TIMEOUT: err_msg:= 'Set Value not accepted - TIMEOUT';
+    		DEV_ERR_SV_ACCEPT_TIMEOUT: err_msg := 'Set Value not accepted - TIMEOUT';
     		
-    		DEV_ERR_AV_Reach_TIMEOUT: err_msg:= 'Actual Value not in tolerance - TIMEOUT';
+    		DEV_ERR_AV_Reach_TIMEOUT: err_msg := 'Actual Value not in tolerance - TIMEOUT';
     		
-    		DEV_ERR_AV_Maintain_TIMEOUT: err_msg:= 'Actual Value not maintained - TIMEOUT';
+    		DEV_ERR_AV_Maintain_TIMEOUT: err_msg := 'Actual Value not maintained - TIMEOUT';
     		
     		DEV_ERR_COMMUNICATION: err_msg := 'Communication error';
     		
@@ -889,17 +785,17 @@ ACTIONS
 		IF sv_rejected_latched THEN
 			Output_DeviceInstance.warning := TRUE;
 			IF warning_detail_str <> '' THEN
-				warning_detail_str :=CONCAT(warning_detail_str,', Setpoint rejected - ');
+				warning_detail_str := CONCAT(warning_detail_str, ', Setpoint rejected - ');
 			ELSE
 				warning_detail_str := 'Setpoint rejected - ';
 			END_IF
 			
 			IF NOT setpoint_mode_allowed THEN
-				warning_detail_str :=CONCAT(warning_detail_str,'no Setpoint allowed.');
+				warning_detail_str := CONCAT(warning_detail_str, 'no Setpoint allowed.');
 			ELSIF cfg_pending THEN
-				warning_detail_str :=CONCAT(warning_detail_str,'HW-Config pending.');
+				warning_detail_str := CONCAT(warning_detail_str, 'HW-Config pending.');
 			ELSIF sv_outofrange THEN
-				warning_detail_str :=CONCAT(warning_detail_str,'Setpoint out of range.');
+				warning_detail_str := CONCAT(warning_detail_str, 'Setpoint out of range.');
 			END_IF
 				
 		END_IF
@@ -918,21 +814,21 @@ ACTIONS
 	
 	    (* === ControlFunction / ControlMode === *)
 	    Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,'CF=');
+	        CONCAT(Output_DeviceInstance.status_msg, 'DV=');
 	    Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,cf_str);
+	        CONCAT(Output_DeviceInstance.status_msg, dv_str);
 
 		Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,', CM=');
+	        CONCAT(Output_DeviceInstance.status_msg, ', CM=');
 	    Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,cm_str);
+	        CONCAT(Output_DeviceInstance.status_msg, cm_str);
 	
 	    (* === Setpoint === *)
 	    IF sv_applied THEN
 	        Output_DeviceInstance.status_msg :=
-		        CONCAT(Output_DeviceInstance.status_msg,', SV=');
+		        CONCAT(Output_DeviceInstance.status_msg, ', SV=');
 		    Output_DeviceInstance.status_msg :=
-		        CONCAT(Output_DeviceInstance.status_msg,sv_str);
+		        CONCAT(Output_DeviceInstance.status_msg, sv_str);
 	    END_IF
 	
 	    (* === State-dependent text === *)
@@ -979,26 +875,26 @@ ACTIONS
 	        CONCAT(Output_DeviceInstance.status_msg, msg_str);
 		
 		Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,' | Status: ');
+	        CONCAT(Output_DeviceInstance.status_msg, ' | Status: ');
 	    Output_DeviceInstance.status_msg :=
-	        CONCAT(Output_DeviceInstance.status_msg,dev_status_str);
+	        CONCAT(Output_DeviceInstance.status_msg, dev_status_str);
 		
 		IF err_msg <> '' THEN
-    		Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg,' | ');
+    		Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, ' | ');
     		Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, error_lable);
         	Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, err_msg);
 	    END_IF
 	    
 	    IF warning_detail_str <> '' THEN
-	    	Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg,' | ');
-	    	Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg,warning_detail_str);
+	    	Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, ' | ');
+	    	Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, warning_detail_str);
 	    END_IF
 	END_ACTION
 
 	ACTION ACT_Reset_BH_Device
 		Output_Reset_Alarm_Enable := Input_DeviceInstance.alarm_reset_enable;
 		IF Input_AlarmMode = 4 THEN
-			Output_Reset_to_device := 2; (*reset alarm*)
+			Output_Reset_to_device := 2; (* reset alarm *)
 			msg_str := ': Device reset triggered.';
 		    Output_DeviceInstance.status_msg := CONCAT(notification_lable, Input_DeviceInstance.name);
 		    Output_DeviceInstance.status_msg := CONCAT(Output_DeviceInstance.status_msg, msg_str);
@@ -1010,22 +906,5 @@ ACTIONS
 		 END_IF
 
 	END_ACTION
-	
-(*	ACTION ACT_Serialnumber_identification *)
-	
-(*		FOR i:= 1 TO 20 DO *)
-(*			IF i=1 THEN *)
-(*				string_var := ''; *)
-(*			END_IF *)
-(*			ascii_byte := Input_SN_from_device[i]; *)
-(*			string_var := CONCAT(string_var, Util_Chr(ascii_byte)); *)
-(*		END_FOR *)
-
-(*	Output_DeviceInstance.serialnumber := string_var; *)
-	
-(*	Output_DeviceInstance.serialnumber := Input_SN; *)
-(*	END_ACTION *)
-	
-	
 	
 END_ACTIONS

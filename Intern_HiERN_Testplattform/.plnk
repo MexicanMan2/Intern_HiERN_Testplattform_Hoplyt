@@ -1,0 +1,1 @@
+ProjectLink { projectName = Intern_HiERN_Testplattform_PLC ; projectNatures = { "at.bachmann.plc.PLCProjectNature" } ; scmInfo = ScmInfo { providerId = "org.eclipse.egit.core.GitProvider" ; reference = "1.0,https://github.com/MexicanMan2/Intern_HiERN_Testplattform_Hoplyt.git,main,Intern_HiERN_Testplattform_PLC" ; } ; }

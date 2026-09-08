@@ -22,15 +22,12 @@ END_VAR]]>
 <![CDATA[
 
 
-
-
 IF Value >= Lower AND Value <= Upper THEN
 	INRANGE := TRUE;
 ELSE
 	INRANGE := FALSE;
 END_IF
- 
-]]>
+ ]]>
 </body>
 </st>
 </pou>

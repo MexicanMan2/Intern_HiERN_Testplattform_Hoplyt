@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <workspace>
 	<dirs>
-		<library><![CDATA[D:\SolutionCenter Workspace\Intern_HiERN_Testplattform_PLC\libs]]></library>
+		<library><![CDATA[C:\SolutionCenter_Workspace\Intern_HiERN_Testplattform_Hoplyt\Intern_HiERN_Testplattform_PLC\libs]]></library>
 	</dirs>
 	<memory-layout>
 		<global-memory-size>61440</global-memory-size>
