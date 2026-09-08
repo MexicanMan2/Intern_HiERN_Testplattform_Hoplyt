@@ -1,0 +1,35 @@
+TYPE BHFF_IO :
+	STRUCT
+		Instance : POINTER TO MFC_BHFF;
+		
+		Read_SV_flow : POINTER TO REAL;
+		Read_AV_flow : POINTER TO REAL;
+		Read_unit_flow : POINTER TO STRING;
+		Read_alarm_info_flow : POINTER TO SINT;
+		
+		Read_SV_p_up : POINTER TO REAL;
+		Read_AV_p_up : POINTER TO REAL;
+		Read_unit_p_up : POINTER TO STRING;
+		Read_alarm_info_p_up : POINTER TO SINT;
+		
+		Read_SV_p_down : POINTER TO REAL;
+		Read_AV_p_down : POINTER TO REAL;
+		Read_unit_p_down : POINTER TO STRING;
+		Read_alarm_info_p_down : POINTER TO SINT;
+		
+		Read_UserTag : POINTER TO STRING;
+		Read_FluidName: POINTER TO STRING;
+		Read_SN : POINTER TO STRING;
+		Read_status : POINTER TO SINT;
+		Read_AlarmMode : POINTER TO SINT;
+		Read_ControlMode : POINTER TO SINT;
+		Read_ControlFunction : POINTER TO SINT;
+		
+		Write_SVreq_flow : POINTER TO REAL;
+		Write_SVreq_p_up : POINTER TO REAL;
+		Write_SVreq_p_down : POINTER TO REAL;
+		Write_ControlMode : POINTER TO SINT;
+		Write_ControlFunction : POINTER TO SINT;
+		Write_UserTag : POINTER TO STRING;
+	END_STRUCT
+END_TYPE

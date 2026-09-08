@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path><![CDATA[\/Helpers]]></path>
+<name>BH_DeviceSingleType</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE BH_DeviceSingleType : (
+		ELFLOW,
+		CORIFLOW,
+		ELPRESS
+	) ;
+END_TYPE
+]]>
+</interface>
+</dut>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path><![CDATA[\/Helpers]]></path>
+<name>FF_SV_LATCH</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE FF_SV_LATCH :
+	STRUCT
+		Flow : REAL;
+		PUp : REAL;
+		PDown : REAL;
+	END_STRUCT
+END_TYPE
+]]>
+</interface>
+</dut>

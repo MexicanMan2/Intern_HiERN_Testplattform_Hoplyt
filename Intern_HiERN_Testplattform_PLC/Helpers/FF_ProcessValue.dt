@@ -1,0 +1,8 @@
+TYPE FF_ProcessValue :
+	STRUCT
+		SV : REAL;
+		AV : REAL;
+		Unit : STRING;
+		AlarmInfo : SINT;		
+	END_STRUCT
+END_TYPE

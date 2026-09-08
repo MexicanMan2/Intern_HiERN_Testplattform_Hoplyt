@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<pou>
+<path><![CDATA[\/Helpers]]></path>
+<name>INRANGE</name>
+<flags>59392</flags>
+<symbol-info>
+</symbol-info>
+<interface>
+<![CDATA[FUNCTION INRANGE : BOOL
+VAR_INPUT
+Lower: REAL;
+Value: REAL;
+Upper: REAL;
+END_VAR
+
+VAR
+
+END_VAR]]>
+</interface>
+<st>
+<body>
+<![CDATA[
+
+
+
+
+IF Value >= Lower AND Value <= Upper THEN
+	INRANGE := TRUE;
+ELSE
+	INRANGE := FALSE;
+END_IF
+ 
+]]>
+</body>
+</st>
+</pou>

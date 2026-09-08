@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path><![CDATA[\/Helpers]]></path>
+<name>MFC_BHCori</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE MFC_BHCori :
+	STRUCT
+		enable : BOOL := FALSE;
+		SVreq : REAL := 0;
+		SV : REAL	:= 0;
+		AV : REAL	:= 0;
+		density : REAL := 0; (* nur bei (mini) CoriFlow in kg/m3 *)
+		temperature : REAL := 0;
+		unit: STRING := 'mln/min';
+		unit_T: STRING := '°C';
+		unit_d: STRING := 'kg/m3';
+		name: STRING := '';
+		media: STRING := '';
+		deviceType: STRING := ''; (* zb. Mini CoriFlow, ... *)
+		status_msg: STRING(255):= '';
+		status: INT := 0;
+		SVreached: BOOL := FALSE;
+		serialnumber: STRING := '';
+		reset: BOOL := FALSE;
+		alarm_info: ARRAY [1..8] OF BOOL;
+		warning: BOOL := FALSE;
+		alarm: BOOL := FALSE;
+		control_mode : SINT := 0; (* Nur f?r Corilolis Wasser MFCs *)
+	END_STRUCT
+END_TYPE
+]]>
+</interface>
+</dut>

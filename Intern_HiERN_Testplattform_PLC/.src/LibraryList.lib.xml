@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<library-list>
+	<library>
+		<name>Standard.lib</name>
+		<library-info>
+			<gvl-info>
+				<name>Globale_Variablen</name>
+				<flags>59392</flags>
+				<symbol-info>
+					<variable name="STANDARD_LIBVER" flags="59490"/>
+					<variable name="STANDARD_MMPREADY" flags="59490"/>
+				</symbol-info>
+			</gvl-info>
+		</library-info>
+	</library>
+	<library>
+		<name>Util_plc.lib</name>
+		<library-info>
+			<gvl-info>
+				<name>Globale_Variablen</name>
+				<flags>59392</flags>
+				<symbol-info>
+					<variable name="UTIL_PLC_LIBVER" flags="59490"/>
+					<variable name="UTIL_PLC_MMPREADY" flags="59490"/>
+					<variable name="Tcs_ERC_ParmInvalid" flags="59490"/>
+					<variable name="Tcs_ERC_NoSelf" flags="59490"/>
+					<variable name="Tcs_ERC_Internal" flags="59490"/>
+					<variable name="Tcs_MX_Code" flags="59490"/>
+					<variable name="Tcs_MB_Code" flags="59490"/>
+					<variable name="Tcs_MD_Code" flags="59490"/>
+					<variable name="Tcs_MR_Code" flags="59490"/>
+					<variable name="Tcs_MW_Code" flags="59490"/>
+					<variable name="Tcs_RD_Code" flags="59490"/>
+					<variable name="Tcs_GD_Code" flags="59490"/>
+					<variable name="Tcs_CONF_PassString" flags="59490"/>
+					<variable name="Tcs_CONF_PassNumber" flags="59490"/>
+					<variable name="Tcs_CONF_ReinitRetain" flags="59490"/>
+					<variable name="Tcs_CONF_MarkerBattPool" flags="59490"/>
+					<variable name="Tcs_CONF_OverTime" flags="59490"/>
+					<variable name="Tcs_CONF_SevereOverTime" flags="59490"/>
+					<variable name="Tcs_VER_Alpha" flags="59490"/>
+					<variable name="Tcs_VER_Beta" flags="59490"/>
+					<variable name="Tcs_VER_Release" flags="59490"/>
+					<variable name="MSys_DIR_System" flags="59490"/>
+					<variable name="MSys_DIR_Driver" flags="59490"/>
+					<variable name="MSys_DIR_Application" flags="59490"/>
+					<variable name="MSys_DIR_Temporary" flags="59490"/>
+					<variable name="MSys_DIR_NonVolatile" flags="59490"/>
+					<variable name="MSys_CPU_80386" flags="59490"/>
+					<variable name="MSys_CPU_80486" flags="59490"/>
+					<variable name="MSys_CPU_Pentium" flags="59490"/>
+					<variable name="MSys_CPU_Geode" flags="59490"/>
+					<variable name="MSys_CPU_Pentium3" flags="59490"/>
+					<variable name="MSys_CPU_Pentium4" flags="59490"/>
+					<variable name="MSys_CPU_Atom" flags="59490"/>
+					<variable name="WDOG_REB_UNKNOWN" flags="59490"/>
+					<variable name="WDOG_REB_POWERFAIL" flags="59490"/>
+					<variable name="WDOG_REB_PANIC" flags="59490"/>
+					<variable name="WDOG_REB_WDOGKNOWN" flags="59490"/>
+					<variable name="WDOG_REB_WDOGUNKNOWN" flags="59490"/>
+					<variable name="PF_E_PARM" flags="59490"/>
+					<variable name="PF_E_NOFILE" flags="59490"/>
+					<variable name="PF_E_FILEBIG" flags="59490"/>
+					<variable name="PF_E_FILEEMPTY" flags="59490"/>
+					<variable name="PF_E_NOSEC" flags="59490"/>
+					<variable name="PF_E_NOGRP" flags="59490"/>
+					<variable name="PF_E_NOKEY" flags="59490"/>
+					<variable name="PF_E_ENDFILE" flags="59490"/>
+					<variable name="PF_E_NOSET" flags="59490"/>
+					<variable name="PF_E_NOUNIT" flags="59490"/>
+					<variable name="PF_MODE_RELOAD_FILE" flags="59490"/>
+					<variable name="PF_MODE_USE_FILE" flags="59490"/>
+					<variable name="PF_MODE_USE_DEFAULTS" flags="59490"/>
+					<variable name="PF_MODE_FILE_LOADED" flags="59490"/>
+					<variable name="Util_CMD_GetFcnHandle" flags="59490"/>
+					<variable name="Util_CMD_CallCFcn" flags="59490"/>
+					<variable name="Util_ERR_CallC_HandleInit" flags="59490"/>
+					<variable name="Util_ERR_CallC_HandleOk" flags="59490"/>
+					<variable name="Util_ERR_CallC_FcnNotFound" flags="59490"/>
+					<variable name="Util_ERR_CallC_NoHandle" flags="59490"/>
+					<variable name="Util_ERR_CallC_InvalidCmd" flags="59490"/>
+					<variable name="Util_ERR_CallC_NoSelf" flags="59490"/>
+					<variable name="Util_ERR_CallC_Internal" flags="59490"/>
+					<variable name="Util_CallC_Mode_C" flags="59490"/>
+					<variable name="Util_CallC_Mode_PLC" flags="59490"/>
+					<variable name="Util_ERR_SymVal_Ok" flags="59490"/>
+					<variable name="Util_ERR_SymVal_InvalidName" flags="59490"/>
+					<variable name="Util_ERR_SymVal_NoHandle" flags="59490"/>
+					<variable name="Util_ERR_SymVal_InvalidLength" flags="59490"/>
+					<variable name="Util_ERR_WDogSet_Ok" flags="59490"/>
+					<variable name="Util_ERR_WDogSet_WDNotActive" flags="59490"/>
+					<variable name="Util_ERR_WDogSet_LowWTime" flags="59490"/>
+					<variable name="Util_ERR_WDogSet_HighWTime" flags="59490"/>
+					<variable name="Util_ERR_WDogSet_ConfigErr" flags="59490"/>
+					<variable name="Util_LIST_GetHead" flags="59490"/>
+					<variable name="Util_LIST_GetTail" flags="59490"/>
+					<variable name="Util_LIST_GetById" flags="59490"/>
+					<variable name="Util_LIST_InsertHead" flags="59490"/>
+					<variable name="Util_LIST_InsertTail" flags="59490"/>
+					<variable name="Util_LIST_RemoveAll" flags="59490"/>
+					<variable name="Util_LIST_RemoveHead" flags="59490"/>
+					<variable name="Util_LIST_RemoveTail" flags="59490"/>
+					<variable name="Util_ERR_LstOk" flags="59490"/>
+					<variable name="Util_ERR_LstNoMem" flags="59490"/>
+					<variable name="Util_ERR_LstInvHandle" flags="59490"/>
+					<variable name="Util_ERR_LstListEmpty" flags="59490"/>
+					<variable name="Util_ERR_LstListFull" flags="59490"/>
+					<variable name="Util_ERR_LstInvCmd" flags="59490"/>
+					<variable name="Util_ERR_LstNotFound" flags="59490"/>
+					<variable name="Util_DT_Mode_UTC" flags="59490"/>
+					<variable name="Util_DT_Mode_Local" flags="59490"/>
+					<variable name="Util_CLOCK_RealTime" flags="59490"/>
+					<variable name="Util_CLOCK_Monotonic" flags="59490"/>
+					<variable name="Util_CLOCK_Ptp" flags="59490"/>
+					<variable name="Util_CLOCK_RtcNano" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_OK" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Error" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Overflow" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Underflow" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Negative" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Invalid_Range" flags="59490"/>
+					<variable name="Util64_TIMESTAMP_Result_Zero" flags="59490"/>
+				</symbol-info>
+			</gvl-info>
+		</library-info>
+	</library>
+</library-list>

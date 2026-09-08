@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path/>
+<name>TESTCASE</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE TESTCASE : (
+		NormalerSollwert,
+		SV0,
+		OutOfRange,
+		ConfigChange
+	) ;
+END_TYPE
+]]>
+</interface>
+</dut>

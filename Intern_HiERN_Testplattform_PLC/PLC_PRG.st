@@ -1,0 +1,98 @@
+PROGRAM PLC_PRG
+VAR
+init : BOOL;
+DEV_ERROR_STATE : state_device_error;
+END_VAR
+
+IF NOT init THEN
+	
+Read_SV_flow := 0;
+Read_AV_flow := 0;
+Read_unit_flow := 'nml';
+Read_alarm_info_flow := 0;
+
+Read_SV_p_up := 1;
+Read_AV_p_up := 1;
+Read_unit_p_up := 'bar';
+Read_alarm_info_p_up := 0;
+
+Read_SV_p_down := 1;
+Read_AV_p_down := 1;
+Read_unit_p_down := 'bar';
+Read_alarm_info_p_down := 0;
+
+Read_UserTag := '';
+Read_FluidName := '';
+Read_SN := '';
+Read_status := 0;
+Read_AlarmMode := 0;
+Read_ControlMode := 0;
+Read_ControlFunction := 0;
+
+Write_SVreq_flow := 0;
+Write_SVreq_p_up := 0;
+Write_SVreq_p_down := 0;
+Write_ControlMode := 0;
+Write_ControlFunction := 0;
+Write_UserTag := '';
+Write_Reset_to_device := 0;
+
+init := TRUE;
+
+END_IF
+
+MFC_CONTROLLER.Input_DeviceInstance := MFC_INSTANCE;
+
+MFC_CONTROLLER.Input_flow.AlarmInfo := Read_alarm_info_flow;
+MFC_CONTROLLER.Input_flow.AV := Read_AV_flow;
+MFC_CONTROLLER.Input_flow.SV := Read_SV_flow;
+MFC_CONTROLLER.Input_flow.Unit := Read_unit_flow;
+
+MFC_CONTROLLER.Input_p_up.AlarmInfo := Read_alarm_info_p_up;
+MFC_CONTROLLER.Input_p_up.AV := Read_AV_p_up;
+MFC_CONTROLLER.Input_p_up.SV := Read_SV_p_up;
+MFC_CONTROLLER.Input_p_up.Unit := Read_unit_p_up;
+
+MFC_CONTROLLER.Input_p_down.AlarmInfo := Read_alarm_info_p_down;
+MFC_CONTROLLER.Input_p_down.AV := Read_AV_p_down;
+MFC_CONTROLLER.Input_p_down.SV := Read_SV_p_down;
+MFC_CONTROLLER.Input_p_down.Unit := Read_unit_p_down;
+
+MFC_CONTROLLER.Input_UserTag:= Read_UserTag;
+MFC_CONTROLLER.Input_FluidName:= Read_FluidName;
+MFC_CONTROLLER.Input_SN:= Read_SN;
+MFC_CONTROLLER.Input_status:= Read_status;
+MFC_CONTROLLER.Input_AlarmMode:= Read_AlarmMode;
+MFC_CONTROLLER.Input_ControlMode:= Read_ControlMode;
+MFC_CONTROLLER.Input_ControlFunction:= Read_ControlFunction;
+
+MFC_CONTROLLER;
+
+Write_SVreq_flow := MFC_CONTROLLER.Output_SVreq_flow;
+Write_SVreq_p_up := MFC_CONTROLLER.Output_SVreq_p_up;
+Write_SVreq_p_down := MFC_CONTROLLER.Output_SVreq_p_down;
+Write_ControlMode := MFC_CONTROLLER.Output_ControlMode;
+Write_ControlFunction := MFC_CONTROLLER.Output_ControlFunction;
+Write_Reset_to_device := MFC_CONTROLLER.Output_Reset_to_device;
+Write_UserTag := MFC_CONTROLLER.Output_UserTag;
+DEV_ERROR_STATE := MFC_CONTROLLER.Output_ErrorState;
+
+MFC_INSTANCE := MFC_CONTROLLER.Output_DeviceInstance;
+
+
+Read_SV_flow := Write_SVreq_flow;
+Read_AV_flow := Read_AV_flow + (Write_SVreq_flow-Read_AV_flow)*0.05;
+Write_SVreq_p_up;
+Read_AV_flow := Read_AV_flow + (Write_SVreq_flow-Read_AV_flow)*0.05;
+Write_SVreq_p_down;
+Read_AV_flow := Read_AV_flow + (Write_SVreq_flow-Read_AV_flow)*0.05;
+Read_ControlMode := Write_ControlMode;
+Read_ControlFunction := Write_ControlFunction;
+Read_UserTag := Write_UserTag;
+
+;
+END_PROGRAM
+
+ACTIONS
+
+END_ACTIONS

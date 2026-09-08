@@ -1,0 +1,25 @@
+TYPE BH_DeviceSingleIO :
+	STRUCT
+		Instance : POINTER TO BH_DeviceSingle;
+		
+		Read_SV : POINTER TO REAL;
+		Read_AV : POINTER TO REAL;
+		Read_unit : POINTER TO STRING;
+		Read_temperature :POINTER TO REAL;
+		Read_density : POINTER TO REAL;
+		Read_alarm_info : POINTER TO SINT;
+		
+		Read_UserTag : POINTER TO STRING;
+		Read_FluidName: POINTER TO STRING;
+		Read_SN : POINTER TO SINT;
+		Read_status : POINTER TO SINT;
+		Read_AlarmMode : POINTER TO SINT;
+		Read_ControlMode : POINTER TO SINT;
+		
+		Write_SVreq : POINTER TO REAL;
+		Write_Reset  : POINTER TO SINT;
+		Write_Output_Reset_Alarm_Enable  : POINTER TO SINT;
+		Write_ControlMode : POINTER TO SINT;
+		Write_UserTag : POINTER TO STRING;
+	END_STRUCT
+END_TYPE

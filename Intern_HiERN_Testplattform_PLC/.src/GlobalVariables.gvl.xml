@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<gvl>
+<path/>
+<name>GlobalVariables</name>
+<flags>4096</flags>
+<symbol-info>
+	<variable name="MFC_INSTANCE" flags="4096"/>
+	<variable name="MFC_CONTROLLER" flags="4096"/>
+	<variable name="TESTCASE" flags="4096"/>
+	<variable name="Read_SV_flow" flags="4096"/>
+	<variable name="Read_AV_flow" flags="4096"/>
+	<variable name="Read_unit_flow" flags="4096"/>
+	<variable name="Read_alarm_info_flow" flags="4096"/>
+	<variable name="Read_SV_p_up" flags="4096"/>
+	<variable name="Read_AV_p_up" flags="4096"/>
+	<variable name="Read_unit_p_up" flags="4096"/>
+	<variable name="Read_alarm_info_p_up" flags="4096"/>
+	<variable name="Read_SV_p_down" flags="4096"/>
+	<variable name="Read_AV_p_down" flags="4096"/>
+	<variable name="Read_unit_p_down" flags="4096"/>
+	<variable name="Read_alarm_info_p_down" flags="4096"/>
+	<variable name="Read_UserTag" flags="4096"/>
+	<variable name="Read_FluidName" flags="4096"/>
+	<variable name="Read_SN" flags="4096"/>
+	<variable name="Read_status" flags="4096"/>
+	<variable name="Read_AlarmMode" flags="4096"/>
+	<variable name="Read_ControlMode" flags="4096"/>
+	<variable name="Read_ControlFunction" flags="4096"/>
+	<variable name="Write_SVreq_flow" flags="4096"/>
+	<variable name="Write_SVreq_p_up" flags="4096"/>
+	<variable name="Write_SVreq_p_down" flags="4096"/>
+	<variable name="Write_ControlMode" flags="4096"/>
+	<variable name="Write_ControlFunction" flags="4096"/>
+	<variable name="Write_UserTag" flags="4096"/>
+	<variable name="Write_Reset_to_device" flags="4096"/>
+</symbol-info>
+<interface>
+<![CDATA[VAR_GLOBAL
+	MFC_INSTANCE : MFC_BHFF;
+
+	MFC_CONTROLLER: FB_Bronkhorst_FFDevice_RTU;
+
+	TESTCASE: TESTCASE;
+	
+	(* HW *)
+	Read_SV_flow : REAL;
+	Read_AV_flow : REAL;
+	Read_unit_flow : STRING;
+	Read_alarm_info_flow : SINT;
+	
+	Read_SV_p_up : REAL;
+	Read_AV_p_up : REAL;
+	Read_unit_p_up : STRING;
+	Read_alarm_info_p_up : SINT;
+	
+	Read_SV_p_down : REAL;
+	Read_AV_p_down : REAL;
+	Read_unit_p_down : STRING;
+	Read_alarm_info_p_down : SINT;
+	
+	Read_UserTag : STRING;
+	Read_FluidName: STRING;
+	Read_SN : STRING;
+	Read_status : SINT;
+	Read_AlarmMode : SINT;
+	Read_ControlMode : SINT;
+	Read_ControlFunction : SINT;
+	
+	Write_SVreq_flow : REAL;
+	Write_SVreq_p_up : REAL;
+	Write_SVreq_p_down : REAL;
+	Write_ControlMode : SINT;
+	Write_ControlFunction : SINT;
+	Write_UserTag : STRING;
+	Write_Reset_to_device : SINT;
+END_VAR]]>
+</interface>
+</gvl>

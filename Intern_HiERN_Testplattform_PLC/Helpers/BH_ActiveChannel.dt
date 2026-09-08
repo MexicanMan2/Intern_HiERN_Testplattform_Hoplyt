@@ -1,0 +1,12 @@
+TYPE BH_ActiveChannel :
+	STRUCT
+	
+		SVreq : REAL;
+		AV : REAL;
+		DeviceSV : REAL;
+		Unit : STRING;
+		SV_Min : REAL;
+		SV_Max : REAL;
+		
+	END_STRUCT
+END_TYPE

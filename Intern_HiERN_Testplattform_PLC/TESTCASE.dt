@@ -1,0 +1,7 @@
+TYPE TESTCASE : (
+		NormalerSollwert,
+		SV0,
+		OutOfRange,
+		ConfigChange
+	) ;
+END_TYPE

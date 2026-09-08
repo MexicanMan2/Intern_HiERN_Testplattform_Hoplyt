@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workspace>
+	<dirs>
+		<library><![CDATA[D:\SolutionCenter Workspace\Intern_HiERN_Testplattform_PLC\libs]]></library>
+	</dirs>
+	<memory-layout>
+		<global-memory-size>61440</global-memory-size>
+		<retain-memory-size>1024</retain-memory-size>
+		<max-pou-count>1024</max-pou-count>
+	</memory-layout>
+	<info>
+	     <replace-constants>false</replace-constants>
+	     <generate-sym-file>false</generate-sym-file>
+	     <long-svi-names>false</long-svi-names>
+	</info>
+	<build>
+	     <auto-check-unused-vars>false</auto-check-unused-vars>
+	     <auto-check-overlapping-mem>false</auto-check-overlapping-mem>
+	     <auto-check-mult-out-write>false</auto-check-mult-out-write>
+	     <auto-check-concurrent-acc>true</auto-check-concurrent-acc>
+	</build>
+</workspace>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Intern_HiERN_Testplattform</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>at.bachmann.bdt.solution.core.solutionNature</nature>
+	</natures>
+</projectDescription>

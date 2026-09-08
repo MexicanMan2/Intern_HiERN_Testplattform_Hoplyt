@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path><![CDATA[\/Helpers]]></path>
+<name>state_device_error</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE state_device_error : (
+		DEV_ERR_NONE,
+		DEV_ERR_INIT,
+		DEV_ERR_SV_ACCEPT_TIMEOUT,
+		DEV_ERR_AV_Reach_TIMEOUT,
+		DEV_ERR_AV_Maintain_TIMEOUT,
+		DEV_ERR_HARDWARE,
+		DEV_ERR_COMMUNICATION,
+		DEV_ERR_DEVICE_FAILURE
+	) ;
+END_TYPE
+]]>
+</interface>
+</dut>

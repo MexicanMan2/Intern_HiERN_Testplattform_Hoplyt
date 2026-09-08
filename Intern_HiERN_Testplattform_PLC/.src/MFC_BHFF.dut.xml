@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<dut>
+<path><![CDATA[\/Helpers]]></path>
+<name>MFC_BHFF</name>
+<flags>2048</flags>
+<interface>
+<![CDATA[TYPE MFC_BHFF : (* Bronkhorst FlexiFlow Devices *)
+	STRUCT
+		state : state_device;
+		enable : BOOL := FALSE;
+		SV_flow_req : REAL := 0;
+		upper_limit : REAL := 0;
+		lower_limit : REAL := 0;
+		SV_flow : REAL	:= 0;
+		AV_flow : REAL	:= 0;
+		SV_p_up_req : REAL := 0;
+		SV_p_up : REAL := 0;
+		AV_p_up : REAL := 0;
+		SV_p_down_req : REAL := 0;
+		SV_p_down : REAL := 0;
+		AV_p_down : REAL := 0;
+		unit_SV : STRING := 'nml/min';
+		unit_flow: STRING := 'nml/min';
+		unit_p: STRING := 'mbar (g)'; (* (g) = gauge = relativ *)
+		unit_T: STRING := '°C';
+		name: STRING := '';
+		media: STRING := '';
+		status_msg:  STRING(255):= '';
+		status: INT := 0; (* 0 Normal operation 1 Maintenance required 2 Out of specification 4 Check function 8 Failure *)
+		SVaccepted : BOOL := FALSE;
+		SVrejected : BOOL := FALSE;
+		SVreached: BOOL := FALSE;
+		serialnumber: STRING := '';
+		reset: BOOL := FALSE; (* 0 No reset 1 Reset counter 2 Reset alarm 3 Reset counter 4 Reset and disable counter 5 Reset firmware program (soft reset) 6 Reset Alarm info error bit 7 Reset Alarm info warning bit *)
+		alarm_reset_enable : SINT := 0;  (* 0 (1) By hardware switch (if present) 1 (2) Externally (obsolete) 2 4()) By parameter Reset 3 (8) Automatically (when alarm conditions no longer apply) *)
+		alarm_info: ARRAY [1..8] OF BOOL; (* 0 Error Error flag raised 1 Warning Warning flag raised 2 Minimum alarm Measure < Alarm minimum limit 3 Maximum alarm Measure > Alarm maximum limit 4 Batch counter alarm Batch counter reached its limit 5 · This bit only: Power-up alarm Alarm possibly caused by a power dip · If combined with bit 2 or 3: Response alarm Difference between Measure and Setpoint too big 6 Master/slave alarm Setpoint out of limits (caused by Slave factor) 7 Hardware alarm Hardware error *)
+		warning: BOOL := FALSE;
+		alarm: BOOL := FALSE;
+		control_mode : SINT := 0; (* z.B. Ventil Öffnen zum Spülen: 0 Bus/RS232 Normal operation 2 FLOW-BUS slave Acting as slave instrument on FLOW-BUS 3 Valve close Controller disabled, valve closed 4 Controller idle Controller disabled, valve frozen in current position 7 Setpoint 100% Setpoint fixed at 100 % 8 Valve fully open Controller disabled, valve fully open 9 Calibration mode Calibration mode enabled 12 Setpoint 0% Setpoint fixed at 0% 18 RS232 Controlling, default/safe state disabled 20 Valve steering Controller disabled, setpoint redirected to Valve Output 22 Valve safe state Instrument in default/safe state 24 2 *)
+		control_function : SINT; (* Bei Flexiflow - Auf welchen Parameter soll geregelt werden: 0 Flow 1 Upstream pressure 2 Downstream pressure 3 Upstream pressure with flow limit 4 Downstream pressure with flow limit 5 Flow with upstream pressure limit 6 Flow with downstream pressure limit*)
+		control_mode_req : SINT := 0; (* z.B. Ventil Öffnen zum Spülen: 0 Bus/RS232 Normal operation 2 FLOW-BUS slave Acting as slave instrument on FLOW-BUS 3 Valve close Controller disabled, valve closed 4 Controller idle Controller disabled, valve frozen in current position 7 Setpoint 100% Setpoint fixed at 100 % 8 Valve fully open Controller disabled, valve fully open 9 Calibration mode Calibration mode enabled 12 Setpoint 0% Setpoint fixed at 0% 18 RS232 Controlling, default/safe state disabled 20 Valve steering Controller disabled, setpoint redirected to Valve Output 22 Valve safe state Instrument in default/safe state 24 2 *)
+		control_function_req : SINT; (* Bei Flexiflow - Auf welchen Parameter soll geregelt werden: 0 Flow 1 Upstream pressure 2 Downstream pressure 3 Upstream pressure with flow limit 4 Downstream pressure with flow limit 5 Flow with upstream pressure limit 6 Flow with downstream pressure limit*)
+		
+	END_STRUCT
+END_TYPE
+
+]]>
+</interface>
+</dut>

@@ -1,0 +1,6 @@
+TYPE BH_DeviceSingleType : (
+		ELFLOW,
+		CORIFLOW,
+		ELPRESS
+	) ;
+END_TYPE
