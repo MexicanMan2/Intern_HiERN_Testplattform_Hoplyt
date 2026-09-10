@@ -1,2 +1,3 @@
-/.compile/
-/.src/
+.compile/
+.olc/
+bin/
