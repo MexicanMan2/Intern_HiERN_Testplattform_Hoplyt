@@ -40,6 +40,8 @@
 	<variable name="Write_UserTag" flags="4096"/>
 	<variable name="Write_Reset_to_device" flags="4096"/>
 	<variable name="Write_Reset_Alarm_Enable" flags="4096"/>
+	<variable name="thermostat_1" flags="4096"/>
+	<variable name="ser_debug" flags="4096"/>
 </symbol-info>
 <interface>
 <![CDATA[VAR_GLOBAL
@@ -91,6 +93,9 @@
 	Write_Reset_to_device : SINT;
 	Write_Reset_Alarm_Enable : SINT;
 	
+	(* Huber Piccolo Thermostat & Debug Data Structures *)
+	thermostat_1 : Thermostat;
+	ser_debug    : serial_debug;
 END_VAR]]>
 </interface>
 </gvl>

@@ -177,7 +177,7 @@ ELSE
 
 END_CASE
 
-;
+SUBP_Thermostat_Trigger;
 END_PROGRAM
 
 ACTIONS

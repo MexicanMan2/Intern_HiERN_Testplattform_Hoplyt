@@ -1,0 +1,22 @@
+TYPE serial_debug :
+	STRUCT
+	
+		sent : BOOL := FALSE;
+		receive : BOOL;
+		test_message : STRING;
+		received_message : STRING;
+		req_connect : BOOL;
+		req_disconnect : BOOL; 
+		manual_mode : BOOL := FALSE; (* TRUE = Pause state machine polling for manual testing *)
+		tx_bytes : UDINT;
+		rx_bytes : UDINT;
+		frame_errors : UDINT;
+		overrun_errors : UDINT;
+		parity_errors : UDINT;
+		read_len : DINT;
+		n_read : UINT;
+		ser_r_status : DINT;
+		ser_w_status : DINT;
+		
+	END_STRUCT
+END_TYPE

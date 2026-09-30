@@ -1,3 +1,4 @@
 .compile/
 .olc/
 bin/
+/.src/

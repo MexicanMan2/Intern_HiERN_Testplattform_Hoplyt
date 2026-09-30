@@ -1,0 +1,15 @@
+TYPE GC :
+	STRUCT
+	
+		enable : BOOL := FALSE;
+		start : BOOL;
+		stop : BOOL;
+		prepare : BOOL;
+		shutdown: BOOL;
+		powerOn: BOOL;
+		ready: BOOL;
+		com_status: STRING;
+		com_ready: BOOL;
+		
+	END_STRUCT
+END_TYPE

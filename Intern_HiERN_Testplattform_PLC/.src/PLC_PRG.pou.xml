@@ -193,7 +193,7 @@ ELSE
 
 END_CASE
 
-;
+SUBP_Thermostat_Trigger;
 ]]>
 </body>
 </st>

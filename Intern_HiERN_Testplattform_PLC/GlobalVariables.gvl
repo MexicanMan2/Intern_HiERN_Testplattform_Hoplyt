@@ -47,4 +47,7 @@ VAR_GLOBAL
 	Write_Reset_to_device : SINT;
 	Write_Reset_Alarm_Enable : SINT;
 	
+	(* Huber Piccolo Thermostat & Debug Data Structures *)
+	thermostat_1 : Thermostat;
+	ser_debug    : serial_debug;
 END_VAR

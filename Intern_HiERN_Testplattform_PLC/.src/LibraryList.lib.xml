@@ -124,4 +124,133 @@
 			</gvl-info>
 		</library-info>
 	</library>
+	<library>
+		<name>file_plc.lib</name>
+		<library-info>
+			<gvl-info>
+				<name>Globale_Variablen</name>
+				<flags>59392</flags>
+				<symbol-info>
+					<variable name="FILE_PLC_LIBVER" flags="59490"/>
+					<variable name="FILE_PLC_MMPREADY" flags="59490"/>
+					<variable name="File_ERC_Ok" flags="59490"/>
+					<variable name="File_ERC_Busy" flags="59490"/>
+					<variable name="File_ERC_Pending" flags="59490"/>
+					<variable name="File_ERC_Other" flags="59490"/>
+					<variable name="File_ERC_ParmInvalid" flags="59490"/>
+					<variable name="File_ERC_PathToNothing" flags="59490"/>
+					<variable name="File_ERC_UncheckedPath" flags="59490"/>
+					<variable name="File_ERC_Already" flags="59490"/>
+					<variable name="File_ERC_EndOf" flags="59490"/>
+					<variable name="File_ERC_NoHandle" flags="59490"/>
+					<variable name="File_ERC_NoSelf" flags="59490"/>
+					<variable name="File_ERC_Other2" flags="59490"/>
+					<variable name="File_ERC_NoMemory" flags="59490"/>
+					<variable name="File_ERC_Internal" flags="59490"/>
+					<variable name="File_ERC_ParmInvalid2" flags="59490"/>
+					<variable name="File_ERC_Internal2" flags="59490"/>
+					<variable name="File_ERC_Internal3" flags="59490"/>
+					<variable name="File_ERC_ParmInvalid3" flags="59490"/>
+					<variable name="File_ERC_InvalidUse" flags="59490"/>
+					<variable name="File_ERC_FileIsOpen" flags="59490"/>
+					<variable name="File_ERC_NoFtpSupport" flags="59490"/>
+					<variable name="File_ERC_InvalidFName" flags="59490"/>
+					<variable name="File_ERC_Abort" flags="59490"/>
+					<variable name="File_REPLEV_NoChange" flags="59490"/>
+					<variable name="File_REPLEV_CollectLost" flags="59490"/>
+					<variable name="File_REPLEV_FreeLost" flags="59490"/>
+					<variable name="File_REPLEV_DelLongNames" flags="59490"/>
+					<variable name="File_PATHRET_UncheckedPath" flags="59490"/>
+					<variable name="File_PATHRET_PathToNothing" flags="59490"/>
+					<variable name="File_PATHRET_FilePathOk" flags="59490"/>
+					<variable name="File_PATHRET_DirPathOk" flags="59490"/>
+					<variable name="File_TYPE_File" flags="59490"/>
+					<variable name="File_TYPE_Dir" flags="59490"/>
+					<variable name="File_TYPE_Mask" flags="59490"/>
+					<variable name="File_ACCESS_RdOnly" flags="59490"/>
+					<variable name="File_ACCESS_WrOnly" flags="59490"/>
+					<variable name="File_ACCESS_RdWr" flags="59490"/>
+					<variable name="File_OPMODE_Direct" flags="59490"/>
+					<variable name="File_OPMODE_PerThread" flags="59490"/>
+					<variable name="File_POS_Rewrite" flags="59490"/>
+					<variable name="File_POS_Truncate" flags="59490"/>
+					<variable name="File_POS_Append" flags="59490"/>
+					<variable name="File_POS_Create" flags="59490"/>
+					<variable name="File_DATA_Binary" flags="59490"/>
+					<variable name="File_DATA_CsvREAL32" flags="59490"/>
+					<variable name="File_DATA_CsvUINT32" flags="59490"/>
+					<variable name="File_DATA_CsvSINT32" flags="59490"/>
+					<variable name="File_DATA_String" flags="59490"/>
+					<variable name="File_PARM_Options" flags="59490"/>
+					<variable name="File_PARM_LineMode" flags="59490"/>
+					<variable name="File_PARM_LineCtrl" flags="59490"/>
+					<variable name="File_PARM_BaudRate" flags="59490"/>
+					<variable name="File_PARM_RdBufSize" flags="59490"/>
+					<variable name="File_PARM_WrBufSize" flags="59490"/>
+					<variable name="File_PARM_RdTimeout" flags="59490"/>
+					<variable name="File_PARM_WrTimeout" flags="59490"/>
+					<variable name="File_LOPTION_Raw" flags="59490"/>
+					<variable name="File_LOPTION_Echo" flags="59490"/>
+					<variable name="File_LOPTION_CrMod" flags="59490"/>
+					<variable name="File_LOPTION_Tandem" flags="59490"/>
+					<variable name="File_LOPTION_7Bit" flags="59490"/>
+					<variable name="File_LOPTION_MonTrap" flags="59490"/>
+					<variable name="File_LOPTION_Abort" flags="59490"/>
+					<variable name="File_LOPTION_Line" flags="59490"/>
+					<variable name="File_LOPTION_Terminal" flags="59490"/>
+					<variable name="File_LMODE_Int" flags="59490"/>
+					<variable name="File_LMODE_Task" flags="59490"/>
+					<variable name="File_LMODE_Rs232" flags="59490"/>
+					<variable name="File_LMODE_Rs422" flags="59490"/>
+					<variable name="File_LMODE_Rs485" flags="59490"/>
+					<variable name="File_LMODE_Tty" flags="59490"/>
+					<variable name="File_LMODE_None" flags="59490"/>
+					<variable name="File_LMODE_Hardw" flags="59490"/>
+					<variable name="File_LMODE_Softw" flags="59490"/>
+					<variable name="File_LMODE_Fsafe" flags="59490"/>
+					<variable name="File_LCTRL_5Bits" flags="59490"/>
+					<variable name="File_LCTRL_6Bits" flags="59490"/>
+					<variable name="File_LCTRL_7Bits" flags="59490"/>
+					<variable name="File_LCTRL_8Bits" flags="59490"/>
+					<variable name="File_LCTRL_NoParity" flags="59490"/>
+					<variable name="File_LCTRL_OddParity" flags="59490"/>
+					<variable name="File_LCTRL_EvenParity" flags="59490"/>
+					<variable name="File_LCTRL_0Parity" flags="59490"/>
+					<variable name="File_LCTRL_1Parity" flags="59490"/>
+					<variable name="File_LCTRL_1Stop" flags="59490"/>
+					<variable name="File_LCTRL_2Stop" flags="59490"/>
+					<variable name="File_LCTRL_BreakOn" flags="59490"/>
+					<variable name="File_LCTRL_8N1" flags="59490"/>
+					<variable name="File_CMD_Open" flags="59490"/>
+					<variable name="File_CMD_Close" flags="59490"/>
+					<variable name="File_CMD_Flush" flags="59490"/>
+					<variable name="File_DIRCMD_Open" flags="59490"/>
+					<variable name="File_DIRCMD_Close" flags="59490"/>
+					<variable name="File_DIRCMD_Read" flags="59490"/>
+					<variable name="File_DIRCMD_Rewind" flags="59490"/>
+					<variable name="File_MCTRL_CTS" flags="59490"/>
+					<variable name="File_MCTRL_DSR" flags="59490"/>
+					<variable name="File_MCTRL_RI" flags="59490"/>
+					<variable name="File_MCTRL_CD" flags="59490"/>
+					<variable name="File_MCTRL_ChangeCTS" flags="59490"/>
+					<variable name="File_MCTRL_ChangeDSR" flags="59490"/>
+					<variable name="File_MCTRL_ChangeRI" flags="59490"/>
+					<variable name="File_MCTRL_ChangeCD" flags="59490"/>
+					<variable name="File_MCTRL_DTR" flags="59490"/>
+					<variable name="File_MCTRL_RTS" flags="59490"/>
+					<variable name="File_CTRLCMD_ModemMode" flags="59490"/>
+					<variable name="File_CTRLCMD_StatisticClear" flags="59490"/>
+					<variable name="File_MEDIA_PcCard" flags="59490"/>
+					<variable name="File_MEDIA_Ram0" flags="59490"/>
+					<variable name="File_MEDIA_NvRam0" flags="59490"/>
+					<variable name="File_MEDIA_NvRam1" flags="59490"/>
+					<variable name="File_MEDIA_Flash" flags="59490"/>
+					<variable name="File_MEDIA_Cfc" flags="59490"/>
+					<variable name="File_MEDIA_UsbBulk" flags="59490"/>
+					<variable name="File_MEDIA_Sd" flags="59490"/>
+					<variable name="File_MEDIA_Mmc" flags="59490"/>
+				</symbol-info>
+			</gvl-info>
+		</library-info>
+	</library>
 </library-list>
