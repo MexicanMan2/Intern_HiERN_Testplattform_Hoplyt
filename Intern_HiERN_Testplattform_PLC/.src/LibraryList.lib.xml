@@ -125,6 +125,23 @@
 		</library-info>
 	</library>
 	<library>
+		<name>cul_plc.lib</name>
+		<library-info>
+			<gvl-info>
+				<name>Globale_Variablen</name>
+				<flags>59392</flags>
+				<symbol-info>
+					<variable name="Cul_PLC_LIBVER" flags="59490"/>
+					<variable name="Cul_PLC_MMPREADY" flags="59490"/>
+					<variable name="Cul_ERC_Other" flags="59490"/>
+					<variable name="Cul_ERC_ParmInvalid" flags="59490"/>
+					<variable name="Cul_ERC_NoObj" flags="59490"/>
+					<variable name="Cul_ERC_NoMemory" flags="59490"/>
+				</symbol-info>
+			</gvl-info>
+		</library-info>
+	</library>
+	<library>
 		<name>file_plc.lib</name>
 		<library-info>
 			<gvl-info>

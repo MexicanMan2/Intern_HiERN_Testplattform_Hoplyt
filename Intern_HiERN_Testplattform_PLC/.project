@@ -42,6 +42,11 @@
 			<locationURI>PLC_LIB_LOC/libs/Util_plc.lib</locationURI>
 		</link>
 		<link>
+			<name>libs/cul_plc.plclib</name>
+			<type>2</type>
+			<locationURI>PLC_LIB_LOC/libs/cul_plc.lib</locationURI>
+		</link>
+		<link>
 			<name>libs/file_plc.plclib</name>
 			<type>2</type>
 			<locationURI>PLC_LIB_LOC/libs/file_plc.lib</locationURI>
