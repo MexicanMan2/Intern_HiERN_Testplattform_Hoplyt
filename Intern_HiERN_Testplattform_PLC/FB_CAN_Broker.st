@@ -1,4 +1,4 @@
- (********************************************************************************
+(********************************************************************************
  * FUNCTION_BLOCK: FB_CAN_Broker
  * 
  * Beschreibung:
@@ -180,7 +180,7 @@ REPEAT
             Channel3.RxLen  := fbRecvMsg.Msg_Length;
         END_IF;
     END_IF;
-UNTIL (fbRecvMsg.Status <> 0) OR (fbRecvMsg.Msg_Left = 0) OR (rxCount > 15)
+UNTIL (fbRecvMsg.Status <> 0) OR (fbRecvMsg.Msg_Left = 0) OR (rxCount > 30)
 END_REPEAT;
 
 (* ============================================================================ *)

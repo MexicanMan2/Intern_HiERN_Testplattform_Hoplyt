@@ -10,6 +10,7 @@
  *        - Vollautomatische Identifikation beim Booten (SN, Firmware, Gastyp, 
  *          Messbereich, Einheit)
  *        - Zustandsmaschine mit Diagnose- und Fehlerübernahme direkt aus dem Gerät!
+ *        - Nullpunkt-Kalibrierung per Knopfdruck / Watch-Variable
  ********************************************************************************)
 PROGRAM SUBP_microFlow_Test
 VAR
@@ -33,25 +34,35 @@ VAR
     nCardNb             : DINT := 2;            (* CPU-Slot (CardNb 2) *)
     nChan               : UDINT := 0;           (* CAN-Kanal (0 = CAN A) *)
     
-    (* Abtastraten *)
-    tPollConc           : TIME := T#100ms;      (* Konzentration: 100ms (10 Hz) *)
+    (* Abtastraten & Timings *)
+    tPollConc           : TIME := T#200ms;      (* Konzentration: 200ms (5 Hz) ideal für Mehrfach-Sensor-Bus *)
     tPollTemp           : TIME := T#5s;         (* Temperatur: 5s *)
-    tTimeout            : TIME := T#150ms;      (* CAN-Timeout *)
+    tTimeout            : TIME := T#500ms;      (* CAN-Timeout für zyklische Abfragen *)
     
     (* Konfiguration Sensor 1 (aktiv am Bus) *)
     bSensor1_Enable     : BOOL := TRUE;
     nSensor1_TxId       : UDINT := 16#300;      (* Sende-ID an Sensor 1 *)
     nSensor1_RxId       : UDINT := 16#208;      (* Antwort-ID von Sensor 1 *)
     
-    (* Konfiguration Sensor 2 (vorbereitet) *)
-    bSensor2_Enable     : BOOL := FALSE;        (* Auf TRUE setzen, sobald Sensor 2 am Bus ist *)
+    (* Konfiguration Sensor 2 (aktiv am Bus) *)
+    bSensor2_Enable     : BOOL := TRUE;        (* Auf TRUE setzen, sobald Sensor 2 am Bus ist *)
     nSensor2_TxId       : UDINT := 16#301;      (* Sende-ID an Sensor 2 *)
     nSensor2_RxId       : UDINT := 16#209;      (* Antwort-ID von Sensor 2 *)
     
-    (* Konfiguration Sensor 3 (vorbereitet) *)
-    bSensor3_Enable     : BOOL := FALSE;        (* Auf TRUE setzen, sobald Sensor 3 am Bus ist *)
+    (* Konfiguration Sensor 3 (aktiv am Bus) *)
+    bSensor3_Enable     : BOOL := TRUE;        (* Auf TRUE setzen, sobald Sensor 3 am Bus ist *)
     nSensor3_TxId       : UDINT := 16#302;      (* Sende-ID an Sensor 3 *)
     nSensor3_RxId       : UDINT := 16#20A;      (* Antwort-ID von Sensor 3 *)
+    
+    (* Steuerbefehle: Nullpunkt-Kalibrierung (im Watch-Fenster auf TRUE setzen) *)
+    bSensor1_ZeroCalib  : BOOL := FALSE;        (* Nullpunkt-Kalibrierung Sensor 1 *)
+    bSensor2_ZeroCalib  : BOOL := FALSE;        (* Nullpunkt-Kalibrierung Sensor 2 *)
+    bSensor3_ZeroCalib  : BOOL := FALSE;        (* Nullpunkt-Kalibrierung Sensor 3 *)
+    
+    (* Steuerbefehle: Software-Neustart (Reboot) des Sensors *)
+    bSensor1_ResetDev   : BOOL := FALSE;        (* Neustart Sensor 1 *)
+    bSensor2_ResetDev   : BOOL := FALSE;        (* Neustart Sensor 2 *)
+    bSensor3_ResetDev   : BOOL := FALSE;        (* Neustart Sensor 3 *)
     
     (* Broker Status *)
     bBrokerReady        : BOOL;
@@ -97,12 +108,14 @@ fbSensor1(
     PollInterval_Temp   := tPollTemp,
     TimeoutTime         := tTimeout,
     ReadCH2             := FALSE,
+    Cmd_ZeroCalibration := bSensor1_ZeroCalib,
+    Cmd_ResetDevice     := bSensor1_ResetDev,
     Bus                 := chan1,
     Data                => Data_Sensor1
 );
 
 (* ============================================================================ *)
-(* 3. Sensor 2 Baustein (z. B. 0-500 ppm CO2)                                   *)
+(* 3. Sensor 2 Baustein (z. B. 0-5000 ppm CO2)                                  *)
 (* ============================================================================ *)
 fbSensor2(
     Enable              := bEnable AND bSensor2_Enable,
@@ -113,6 +126,8 @@ fbSensor2(
     PollInterval_Temp   := tPollTemp,
     TimeoutTime         := tTimeout,
     ReadCH2             := FALSE,
+    Cmd_ZeroCalibration := bSensor2_ZeroCalib,
+    Cmd_ResetDevice     := bSensor2_ResetDev,
     Bus                 := chan2,
     Data                => Data_Sensor2
 );
@@ -129,12 +144,25 @@ fbSensor3(
     PollInterval_Temp   := tPollTemp,
     TimeoutTime         := tTimeout,
     ReadCH2             := FALSE,
+    Cmd_ZeroCalibration := bSensor3_ZeroCalib,
+    Cmd_ResetDevice     := bSensor3_ResetDev,
     Bus                 := chan3,
     Data                => Data_Sensor3
 );
 
 (* ============================================================================ *)
-(* 5. Sammel-Status für die Gesamtanlage                                        *)
+(* 5. Automatische Rücknahme der Befehlsflags (nach Start der Aktion)           *)
+(* ============================================================================ *)
+IF Data_Sensor1.State = MF_STATE_ZERO_CALIB THEN bSensor1_ZeroCalib := FALSE; END_IF;
+IF Data_Sensor2.State = MF_STATE_ZERO_CALIB THEN bSensor2_ZeroCalib := FALSE; END_IF;
+IF Data_Sensor3.State = MF_STATE_ZERO_CALIB THEN bSensor3_ZeroCalib := FALSE; END_IF;
+
+IF Data_Sensor1.State = MF_STATE_RESET_DEVICE THEN bSensor1_ResetDev := FALSE; END_IF;
+IF Data_Sensor2.State = MF_STATE_RESET_DEVICE THEN bSensor2_ResetDev := FALSE; END_IF;
+IF Data_Sensor3.State = MF_STATE_RESET_DEVICE THEN bSensor3_ResetDev := FALSE; END_IF;
+
+(* ============================================================================ *)
+(* 6. Sammel-Status für die Gesamtanlage                                        *)
 (* ============================================================================ *)
 bAllConnected := (NOT bSensor1_Enable OR Data_Sensor1.Connected) AND
                  (NOT bSensor2_Enable OR Data_Sensor2.Connected) AND

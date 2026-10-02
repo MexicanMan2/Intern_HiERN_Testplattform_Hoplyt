@@ -57,6 +57,8 @@ VAR
     tPollConc           : TON;
     tPollTemp           : TON;
     tTimeout            : TON;
+    tTimeoutInit        : TIME := T#1500ms;     (* Großzügiges Timeout für Initialisierung *)
+    initRetryCounter    : INT := 0;             (* Retry-Zähler für Initialisierung *)
     
     (* Helfer für Float & Integer *)
     dwHelper            : DWORD;
@@ -168,10 +170,11 @@ CASE eState OF
     (* INIT_START                                                               *)
     (* ------------------------------------------------------------------------ *)
     MF_STATE_INIT_START:
-        Data.StateText := 'Initialisiere...';
-        subStep        := 0;
-        timeoutCounter := 0;
-        eState         := MF_STATE_READ_SN;
+        Data.StateText   := 'Initialisiere...';
+        subStep          := 0;
+        timeoutCounter   := 0;
+        initRetryCounter := 0;
+        eState           := MF_STATE_READ_SN;
 
     (* ------------------------------------------------------------------------ *)
     (* 1. Seriennummer abfragen (Cmd 16#40)                                     *)
@@ -184,20 +187,27 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#40 THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 Data.SerialNumber := WORD_TO_UINT(SHL(BYTE_TO_WORD(Bus.RxData[3]), 8) OR BYTE_TO_WORD(Bus.RxData[2]));
                 subStep := 0;
                 eState  := MF_STATE_READ_SW_REV;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Seriennummer';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Seriennummer';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -212,20 +222,27 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#0B THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 Data.SoftwareRevision := WORD_TO_UINT(SHL(BYTE_TO_WORD(Bus.RxData[3]), 8) OR BYTE_TO_WORD(Bus.RxData[2]));
                 subStep := 0;
                 eState  := MF_STATE_READ_CONFIG_ID;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Firmware';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Firmware';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -240,9 +257,10 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#62 THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 dwHelper := SHL(BYTE_TO_DWORD(Bus.RxData[5]), 24) OR SHL(BYTE_TO_DWORD(Bus.RxData[4]), 16) OR
                             SHL(BYTE_TO_DWORD(Bus.RxData[3]), 8)  OR BYTE_TO_DWORD(Bus.RxData[2]);
                 Data.ConfigID := dwHelper;
@@ -273,12 +291,18 @@ CASE eState OF
                 eState  := MF_STATE_READ_RANGE;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Config-ID';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Config-ID';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -293,9 +317,10 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#47 AND Bus.RxData[1] = 16#02 THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 dwHelper := SHL(BYTE_TO_DWORD(Bus.RxData[5]), 24) OR SHL(BYTE_TO_DWORD(Bus.RxData[4]), 16) OR
                             SHL(BYTE_TO_DWORD(Bus.RxData[3]), 8)  OR BYTE_TO_DWORD(Bus.RxData[2]);
                 pRealHelper := ADR(dwHelper);
@@ -304,12 +329,18 @@ CASE eState OF
                 eState  := MF_STATE_READ_UNIT;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Messbereich';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Messbereich';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -324,9 +355,10 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#61 AND Bus.RxData[1] = 16#02 THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 nUnitVal := WORD_TO_UINT(SHL(BYTE_TO_WORD(Bus.RxData[3]), 8) OR BYTE_TO_WORD(Bus.RxData[2]));
                 IF nUnitVal = 0 THEN
                     Data.MeasurementUnit_CH1 := 'ppm';
@@ -339,12 +371,18 @@ CASE eState OF
                 eState  := MF_STATE_READ_OP_HOURS;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Messeinheit';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Messeinheit';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -359,9 +397,10 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := TimeoutTime);
+            tTimeout(IN := TRUE, PT := tTimeoutInit);
             IF Bus.RxNew AND Bus.RxData[0] = 16#43 THEN
                 tTimeout(IN := FALSE);
+                initRetryCounter := 0;
                 Data.OperatingHours := WORD_TO_UINT(SHL(BYTE_TO_WORD(Bus.RxData[3]), 8) OR BYTE_TO_WORD(Bus.RxData[2]));
                 
                 (* Init erfolgreich abgeschlossen! *)
@@ -373,12 +412,18 @@ CASE eState OF
                 eState         := MF_STATE_READY;
             ELSIF tTimeout.Q THEN
                 tTimeout(IN := FALSE);
-                Data.Connected := FALSE;
-                Data.Error     := TRUE;
-                Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
-                Data.ErrorText := 'Timeout bei Abfrage Betriebsstunden';
-                subStep := 0;
-                eState  := MF_STATE_ERROR;
+                initRetryCounter := initRetryCounter + 1;
+                IF initRetryCounter >= 3 THEN
+                    initRetryCounter := 0;
+                    Data.Connected := FALSE;
+                    Data.Error     := TRUE;
+                    Data.ErrorCode := MF_ERR_COMM_TIMEOUT;
+                    Data.ErrorText := 'Timeout bei Abfrage Betriebsstunden';
+                    subStep := 0;
+                    eState  := MF_STATE_ERROR;
+                ELSE
+                    subStep := 0; (* Automatische Wiederholung *)
+                END_IF;
             END_IF;
         END_IF;
 
@@ -507,7 +552,7 @@ CASE eState OF
             Bus.TxReq := TRUE;
             subStep   := 1;
         ELSIF subStep = 1 THEN
-            tTimeout(IN := TRUE, PT := T#500ms);
+            tTimeout(IN := TRUE, PT := T#2s);
             IF Bus.RxNew AND Bus.RxData[0] = 16#11 THEN
                 tTimeout(IN := FALSE);
                 subStep := 0;

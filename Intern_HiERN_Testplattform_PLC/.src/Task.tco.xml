@@ -13,6 +13,7 @@
 		<watchdog-time-in-microseconds>false</watchdog-time-in-microseconds>
 		<program-list>
 			<program>PLC_PRG();</program>
+			<program>SUBP_microFlow_Test();</program>
 		</program-list>
 		<customparameterlist>
 		</customparameterlist>

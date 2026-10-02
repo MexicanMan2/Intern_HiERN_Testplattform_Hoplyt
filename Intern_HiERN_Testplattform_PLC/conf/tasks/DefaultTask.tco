@@ -12,4 +12,7 @@
   <programs>
     <program href="#ref:PLC_PRG"/>
   </programs>
+  <programs>
+    <program href="#ref:SUBP_microFlow_Test"/>
+  </programs>
 </TaskConfiguration:Task>

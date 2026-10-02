@@ -177,8 +177,6 @@ ELSE
 
 END_CASE
 
-SUBP_Thermostat_Trigger;
-SUBP_microFlow_Test;
 END_PROGRAM
 
 ACTIONS
