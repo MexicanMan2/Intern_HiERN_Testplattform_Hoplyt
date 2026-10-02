@@ -1,0 +1,10 @@
+TYPE E_microFlow_Error : (
+    MF_ERR_NONE             := 0,   (* Kein Fehler *)
+    MF_ERR_COMM_TIMEOUT     := 1,   (* Keine CAN-Antwort vom Gerät (Timeout) *)
+    MF_ERR_IR_LAMP_LEVEL    := 2,   (* IR-Strahler Intensität < 50% (Verschmutzung/Alterung) *)
+    MF_ERR_IR_LAMP_MISSING  := 3,   (* IR-Strahler nicht erkannt / defekt *)
+    MF_ERR_UV_LEVEL         := 4,   (* UV-LED Pegelfehler *)
+    MF_ERR_CONFIG_INVALID   := 5,   (* Ungültige Sensorkonfiguration *)
+    MF_ERR_BUS              := 6    (* CAN-Treiberfehler (CUL_PLC) *)
+);
+END_TYPE

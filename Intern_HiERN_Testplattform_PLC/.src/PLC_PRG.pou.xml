@@ -194,6 +194,7 @@ ELSE
 END_CASE
 
 SUBP_Thermostat_Trigger;
+SUBP_microFlow_Test;
 ]]>
 </body>
 </st>

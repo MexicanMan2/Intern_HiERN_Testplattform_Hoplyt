@@ -1,0 +1,34 @@
+TYPE ST_microFlow_Data :
+STRUCT
+    (* Zustand & Status *)
+    State               : E_microFlow_State := MF_STATE_DISABLED;
+    StateText           : STRING[32] := 'Deaktiviert';
+    Connected           : BOOL := FALSE;        (* Sensor antwortet und ist initialisiert *)
+    Error               : BOOL := FALSE;        (* Mindestens ein Fehler anstehend *)
+    ErrorCode           : E_microFlow_Error := MF_ERR_NONE;
+    ErrorText           : STRING[64] := 'OK';
+    
+    (* Live-Messwerte *)
+    Concentration_CH1   : REAL := 0.0;          (* Konzentration CH1 *)
+    Concentration_CH2   : REAL := 0.0;          (* Konzentration CH2 *)
+    Temperature_CH1     : REAL := 0.0;          (* Detektortemperatur in °C *)
+    
+    (* Automatisch beim Booten erkannte Gerätedaten *)
+    SerialNumber        : UINT := 0;            (* Seriennummer (z. B. 23734) *)
+    SoftwareRevision    : UINT := 0;            (* Firmware-Version (z. B. 543) *)
+    Gastype_CH1         : STRING[16] := '';     (* Erkannter Gastyp (z. B. 'CO', 'CO2') *)
+    MeasurementRange_CH1: REAL := 0.0;          (* Messbereichsendwert (z. B. 50.0 oder 500.0) *)
+    MeasurementUnit_CH1 : STRING[8] := '';      (* Erkannte Einheit ('ppm' oder 'Vol.%') *)
+    OperatingHours      : UINT := 0;            (* Betriebsstunden *)
+    ConfigID            : UDINT := 0;           (* Rohe Config-ID des Sensors *)
+    
+    (* Diagnose-Bits (Statusbyte) *)
+    StatusByte          : BYTE := 16#00;
+    IR_Detected         : BOOL := FALSE;
+    IR_Level_OK         : BOOL := FALSE;
+    UV1_Detected        : BOOL := FALSE;
+    UV2_Detected        : BOOL := FALSE;
+    UV1_Level_Error     : BOOL := FALSE;
+    UV2_Level_Error     : BOOL := FALSE;
+END_STRUCT
+END_TYPE

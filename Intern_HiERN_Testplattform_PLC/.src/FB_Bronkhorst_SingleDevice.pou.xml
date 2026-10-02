@@ -217,6 +217,8 @@ END_VAR]]>
 <![CDATA[
 
 
+
+
 (* Eingangsdaten *)
 Output_DeviceInstance := Input_DeviceInstance;
 ACT_ProcessAlarmInfo_Input;
@@ -340,6 +342,8 @@ END_IF
 ACT_Output_To_Device_And_User;
 ACT_Build_StatusMessage;
 
+
+
 ]]>
 </body>
 </st>
@@ -350,6 +354,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 
         sv_pending := FALSE;
@@ -375,6 +381,7 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
 
 
 			(* === CONTROLLING: Überwachung === *)
@@ -407,6 +414,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 
 	    FLAG_Alarm := FALSE;
@@ -465,6 +474,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		activePrimary.SVreq := sv_req;
 		activePrimary.AV := Input.AV;
 		activePrimary.DeviceSV := Input.SV;
@@ -505,6 +515,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		CASE cfg_mode_act OF
 			0: cm_str := 'BUS/RS232';
 			1: cm_str := 'Analog input';
@@ -538,6 +549,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 	    Output_DeviceInstance.alarm_info := Input_alarm_info;]]>
 </body>
 </st>
@@ -549,6 +561,7 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
 
 
 	    (* ControlMode *)
@@ -573,6 +586,7 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
 
 	
 	    (* SV Requests *)
@@ -606,6 +620,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 			(* Timeout *)
 	    	t_av_NOTmaintained(IN := NOT sv_maintained, PT := T#10s); (* Variabel über User !!*)
 	        
@@ -631,6 +646,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		sv_rejected := FALSE;
 	    sv_applied  := FALSE;
 	    sv_accepted := FALSE;
@@ -652,6 +668,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		Input_p_SV_mbarg := Input.SV*1000-1000; (* mbar(g) *)
 		Input_p_AV_mbarg := Input.AV*1000-1000;]]>
 </body>
@@ -664,6 +681,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 	
         Output_DeviceInstance.status := Input_status;
@@ -707,6 +726,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 			CASE Input_DeviceType OF
 				ELFLOW:   dv_str := ': ELFLOW';
 				CORIFLOW: dv_str := ': CoriFlow';
@@ -726,6 +746,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		 Output_DeviceInstance.SVreq := sv_req;]]>
 </body>
 </st>
@@ -739,6 +760,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		Input_alarm_info := BH_AlarmBitTOAlarmArray(Input.AlarmInfo);]]>
 </body>
 </st>
@@ -750,6 +772,7 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
 
 
 		Output_DeviceInstance.media := Input_FluidName;
@@ -789,6 +812,8 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
+
+
 		
 		(* ERROR Reset *)
 		
@@ -805,6 +830,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 
 	    Output_DeviceInstance.status_msg := '';
@@ -956,6 +983,7 @@ ACT_Build_StatusMessage;
 <![CDATA[
 
 
+
 		Output_Reset_Alarm_Enable := Input_DeviceInstance.alarm_reset_enable;
 		IF Input_AlarmMode = 4 THEN
 			Output_Reset_to_device := 2; (* reset alarm *)
@@ -978,6 +1006,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 
 	    (* ================================================= *)
@@ -1044,6 +1074,8 @@ ACT_Build_StatusMessage;
 <body>
 <![CDATA[
 
+
+
 	
 		IF Input_UserTag <> Output_DeviceInstance.name THEN
 			Output_UserTag := Output_DeviceInstance.name;
@@ -1059,6 +1091,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 
 	    IF cfg_pending THEN
@@ -1082,6 +1116,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 		
 		IF NOT setpoint_mode_allowed THEN
@@ -1157,6 +1193,8 @@ ACT_Build_StatusMessage;
 <st>
 <body>
 <![CDATA[
+
+
 
 		
 		IF StateEntry THEN

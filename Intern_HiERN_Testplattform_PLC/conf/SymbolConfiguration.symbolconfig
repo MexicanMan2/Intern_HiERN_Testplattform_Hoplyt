@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ASCII"?>
-<symbolconfig:symbol-table xmlns:symbolconfig="http://www.bachmann.at/plc/configuration/symbolconfig" gvlDefaultFlag="YYYYY" pouDefaultFlag="NNNNN" processImageDefaultFlag="NNNNN" libGvlDefaultFlag="NNNNN">
+<symbolconfig:symbol-table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:symbolconfig="http://www.bachmann.at/plc/configuration/symbolconfig" gvlDefaultFlag="YYYYY" pouDefaultFlag="NNNNN" processImageDefaultFlag="NNNNN" libGvlDefaultFlag="NNNNN">
   <symbolconfig:libs/>
   <symbolconfig:processimage/>
-  <symbolconfig:pousAndGvls/>
+  <symbolconfig:pousAndGvls>
+    <children xsi:type="symbolconfig:pou" flags="YYYYY" name="SUBP_microFlow_Test"/>
+    <children xsi:type="symbolconfig:pou" flags="YYYYI" name="FB_microFlow_CAN"/>
+  </symbolconfig:pousAndGvls>
 </symbolconfig:symbol-table>

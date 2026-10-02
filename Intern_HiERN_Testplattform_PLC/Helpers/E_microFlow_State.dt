@@ -1,0 +1,17 @@
+TYPE E_microFlow_State : (
+    MF_STATE_DISABLED       := 0,   (* 0: Sensor deaktiviert *)
+    MF_STATE_INIT_START     := 1,   (* 1: Initialisierung startet *)
+    MF_STATE_READ_SN        := 2,   (* 2: Seriennummer abfragen (Cmd 16#40) *)
+    MF_STATE_READ_SW_REV    := 3,   (* 3: Firmware-Version abfragen (Cmd 16#0B) *)
+    MF_STATE_READ_CONFIG_ID := 4,   (* 4: Config-ID & Gastyp abfragen (Cmd 16#62) *)
+    MF_STATE_READ_RANGE     := 5,   (* 5: Messbereichsendwert abfragen (Cmd 16#47) *)
+    MF_STATE_READ_UNIT      := 6,   (* 6: Messeinheit abfragen (Cmd 16#61) *)
+    MF_STATE_READ_OP_HOURS  := 7,   (* 7: Betriebsstunden abfragen (Cmd 16#43) *)
+    MF_STATE_READY          := 10,  (* 10: Initialisiert und bereit für zyklischen Betrieb *)
+    MF_STATE_POLL_CONC      := 11,  (* 11: Konzentration abfragen (Cmd 16#17) *)
+    MF_STATE_POLL_TEMP      := 12,  (* 12: Temperatur abfragen (Cmd 16#18) *)
+    MF_STATE_ZERO_CALIB     := 20,  (* 20: Nullpunktkalibrierung aktiv (Cmd 16#11) *)
+    MF_STATE_RESET_DEVICE   := 30,  (* 30: Software-Reset des Sensors aktiv (Cmd 16#04) *)
+    MF_STATE_ERROR          := 99   (* 99: Fehlerzustand (Gerätefehler, Timeout, Busfehler) *)
+);
+END_TYPE

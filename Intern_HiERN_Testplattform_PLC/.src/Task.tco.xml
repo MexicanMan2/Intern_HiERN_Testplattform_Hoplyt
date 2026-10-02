@@ -5,7 +5,7 @@
 		<name>DefaultTas</name>
 		<priority>19</priority>
 		<kindof>cyclic</kindof>
-		<interval>1000</interval>
+		<interval>50</interval>
 		<time-in-microseconds>false</time-in-microseconds>
 		<enable-watchdog>false</enable-watchdog>
 		<watchdog-time></watchdog-time>
